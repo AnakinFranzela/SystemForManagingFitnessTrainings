@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SystemForManagingFitnessTrainings.Entities.Progress>
+
+<h2>Progress Tracker</h2>
+<table class="table">
+    <tr>
+        <th>Exercise</th>
+        <th>Date</th>
+        <th>Results</th>
+    </tr>
+    @foreach (var progress in Model)
+    {
+        <tr>
+            <td>@progress.Exercise.Name</td>
+            <td>@progress.Date.ToShortDateString()</td>
+            <td>@progress.Results</td>
+        </tr>
+    }
+</table>
+
+<canvas id="progressChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('progressChart').getContext('2d');
+    var progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Select(p => p.Date.ToShortDateString()))),
+            datasets: [{
+                label: 'Progress Over Time',
+                data: @Html.Raw(Json.Serialize(Model.Select(p => p.Results))),
+                borderColor: 'blue',
+                fill: false
+            }]
+        }
+    });
+</script>
