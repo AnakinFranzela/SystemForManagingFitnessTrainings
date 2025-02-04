@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SystemForManagingFitnessTrainings.Migrations
 {
     /// <inheritdoc />
-    public partial class Tables : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -189,14 +189,14 @@ namespace SystemForManagingFitnessTrainings.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrainingPlansId = table.Column<int>(type: "int", nullable: true)
+                    TrainingPlanId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Exercises", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Exercises_TrainingPlans_TrainingPlansId",
-                        column: x => x.TrainingPlansId,
+                        name: "FK_Exercises_TrainingPlans_TrainingPlanId",
+                        column: x => x.TrainingPlanId,
                         principalTable: "TrainingPlans",
                         principalColumn: "Id");
                 });
@@ -293,9 +293,9 @@ namespace SystemForManagingFitnessTrainings.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exercises_TrainingPlansId",
+                name: "IX_Exercises_TrainingPlanId",
                 table: "Exercises",
-                column: "TrainingPlansId");
+                column: "TrainingPlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProgressRecords_ExerciseId",

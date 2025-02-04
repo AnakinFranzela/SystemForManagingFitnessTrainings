@@ -2,7 +2,7 @@
 
 namespace SystemForManagingFitnessTrainings.Entities
 {
-    public class TrainingPlans
+    public class TrainingPlan
     {
         [Key]
         public int Id { get; set; }
@@ -13,7 +13,7 @@ namespace SystemForManagingFitnessTrainings.Entities
         public string Frequency { get; set; } // e.g., "3 times per week"
 
         // List of exercises (not normalized, can be handled differently)
-        public ICollection<Exercises> Exercises { get; set; }
+        public ICollection<Exercise> Exercises { get; set; }
 
         // One-to-One relationship with User
         public string UserId { get; set; }

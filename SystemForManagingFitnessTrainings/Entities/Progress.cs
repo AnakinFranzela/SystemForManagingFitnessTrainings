@@ -10,7 +10,7 @@ namespace SystemForManagingFitnessTrainings.Entities
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public int ExerciseId { get; set; }
-        public Exercises Exercise { get; set; }
+        public Exercise Exercise { get; set; }
         public DateOnly Date { get; set; }
         public string Results { get; set; }
 

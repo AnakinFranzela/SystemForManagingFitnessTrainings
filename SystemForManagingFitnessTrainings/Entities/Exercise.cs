@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SystemForManagingFitnessTrainings.Entities
 {
-    public class Exercises
+    public class Exercise
     {
         [Key]
         public int Id { get; set; }

@@ -25,12 +25,12 @@ namespace SystemForManagingFitnessTrainings.Data
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.TrainingPlan)
             .WithOne(tp => tp.User)
-                .HasForeignKey<TrainingPlans>(tp => tp.UserId);
+                .HasForeignKey<TrainingPlan>(tp => tp.UserId);
         }
 
         public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<TrainingPlans> TrainingPlans { get; set; }
-        public DbSet<Exercises> Exercises { get; set; }
+        public DbSet<TrainingPlan> TrainingPlans { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Progress> ProgressRecords { get; set; }
     }
 }

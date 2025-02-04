@@ -12,8 +12,8 @@ using SystemForManagingFitnessTrainings.Data;
 namespace SystemForManagingFitnessTrainings.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250127100706_Tables")]
-    partial class Tables
+    [Migration("20250204160634_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ApplicationUserExercises", b =>
+            modelBuilder.Entity("ApplicationUserExercise", b =>
                 {
                     b.Property<int>("ExercisesId")
                         .HasColumnType("int");
@@ -248,7 +248,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Exercises", b =>
+            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Exercise", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -268,12 +268,12 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TrainingPlansId")
+                    b.Property<int?>("TrainingPlanId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrainingPlansId");
+                    b.HasIndex("TrainingPlanId");
 
                     b.ToTable("Exercises");
                 });
@@ -309,7 +309,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
                     b.ToTable("ProgressRecords");
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlans", b =>
+            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -340,9 +340,9 @@ namespace SystemForManagingFitnessTrainings.Migrations
                     b.ToTable("TrainingPlans");
                 });
 
-            modelBuilder.Entity("ApplicationUserExercises", b =>
+            modelBuilder.Entity("ApplicationUserExercise", b =>
                 {
-                    b.HasOne("SystemForManagingFitnessTrainings.Entities.Exercises", null)
+                    b.HasOne("SystemForManagingFitnessTrainings.Entities.Exercise", null)
                         .WithMany()
                         .HasForeignKey("ExercisesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -406,16 +406,16 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Exercises", b =>
+            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Exercise", b =>
                 {
-                    b.HasOne("SystemForManagingFitnessTrainings.Entities.TrainingPlans", null)
+                    b.HasOne("SystemForManagingFitnessTrainings.Entities.TrainingPlan", null)
                         .WithMany("Exercises")
-                        .HasForeignKey("TrainingPlansId");
+                        .HasForeignKey("TrainingPlanId");
                 });
 
             modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Progress", b =>
                 {
-                    b.HasOne("SystemForManagingFitnessTrainings.Entities.Exercises", "Exercise")
+                    b.HasOne("SystemForManagingFitnessTrainings.Entities.Exercise", "Exercise")
                         .WithMany()
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -432,11 +432,11 @@ namespace SystemForManagingFitnessTrainings.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlans", b =>
+            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlan", b =>
                 {
                     b.HasOne("SystemForManagingFitnessTrainings.Entities.ApplicationUser", "User")
                         .WithOne("TrainingPlan")
-                        .HasForeignKey("SystemForManagingFitnessTrainings.Entities.TrainingPlans", "UserId")
+                        .HasForeignKey("SystemForManagingFitnessTrainings.Entities.TrainingPlan", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -449,7 +449,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlans", b =>
+            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlan", b =>
                 {
                     b.Navigation("Exercises");
                 });

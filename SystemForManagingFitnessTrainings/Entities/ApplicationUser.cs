@@ -11,9 +11,9 @@ namespace SystemForManagingFitnessTrainings.Entities
         [Required]
         public int LastName { get; set; }
         // One-to-One relationship with TrainingPlan
-        public TrainingPlans TrainingPlan { get; set; }
+        public TrainingPlan TrainingPlan { get; set; }
 
         // Many-to-Many relationship with Exercises
-        public ICollection<Exercises> Exercises { get; set; }
+        public ICollection<Exercise> Exercises { get; set; }
     }
 }

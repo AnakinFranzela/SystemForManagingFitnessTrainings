@@ -1,8 +1,8 @@
 ﻿using SystemForManagingFitnessTrainings.Entities;
 
-namespace SystemForManagingFitnessTrainings.Repositories.IRepositories
+namespace SystemForManagingFitnessTrainings.Services.IServices
 {
-    public interface IProgressRepository
+    public interface IProgressService
     {
         Task<IEnumerable<Progress>> GetUserProgressAsync(string userId);
         Task AddProgressAsync(Progress progress);

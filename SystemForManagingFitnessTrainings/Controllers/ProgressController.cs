@@ -2,25 +2,26 @@
 using Microsoft.AspNetCore.Mvc;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Helpers;
-using SystemForManagingFitnessTrainings.Repositories.IRepositories;
+using SystemForManagingFitnessTrainings.Services;
+using SystemForManagingFitnessTrainings.Services.IServices;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
     [Route("progress")]
     public class ProgressController : Controller
     {
-        private readonly IProgressRepository _progressRepository;
+        private readonly IProgressService _progressService;
 
-        public ProgressController(IProgressRepository progressRepository)
+        public ProgressController(IProgressService progressService)
         {
-            _progressRepository = progressRepository;
+            _progressService = progressService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             string userId = User.Identity.Name; // Retrieve logged-in user ID
-            var progress = await _progressRepository.GetUserProgressAsync(userId);
+            var progress = await _progressService.GetUserProgressAsync(userId);
             return View(progress);
         }
 
@@ -29,7 +30,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _progressRepository.AddProgressAsync(progress);
+                await _progressService.AddProgressAsync(progress);
                 return RedirectToAction("Index");
             }
             return View(progress);

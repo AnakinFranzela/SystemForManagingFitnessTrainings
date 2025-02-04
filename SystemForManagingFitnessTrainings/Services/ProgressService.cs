@@ -1,15 +1,15 @@
-﻿using SystemForManagingFitnessTrainings.Repositories.IRepositories;
-using SystemForManagingFitnessTrainings.Entities;
+﻿using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Data;
 using Microsoft.EntityFrameworkCore;
+using SystemForManagingFitnessTrainings.Services.IServices;
 
-namespace SystemForManagingFitnessTrainings.Repositories
+namespace SystemForManagingFitnessTrainings.Services
 {
-    public class ProgressRepository : IProgressRepository
+    public class ProgressService : IProgressService
     {
         private readonly ApplicationDbContext _context;
 
-        public ProgressRepository(ApplicationDbContext context)
+        public ProgressService(ApplicationDbContext context)
         {
             _context = context;
         }
