@@ -19,5 +19,18 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             return View(viewModel);
         }
+
+        public IActionResult Create()
+        {
+            TrainingPlan viewModel = new TrainingPlan();
+            return View(viewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(TrainingPlan viewModel)
+        {
+
+            return View(viewModel);
+        }
     }
 }

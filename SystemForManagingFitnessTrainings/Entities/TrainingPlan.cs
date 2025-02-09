@@ -8,9 +8,8 @@ namespace SystemForManagingFitnessTrainings.Entities
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public int FrequencyOfTrainigns { get; set; }
         [Required]
-        public string Frequency { get; set; } // e.g., "3 times per week"
+        public int Frequency { get; set; } // Пъти в седмицата
 
         // List of exercises (not normalized, can be handled differently)
         public ICollection<Exercise> Exercises { get; set; }
