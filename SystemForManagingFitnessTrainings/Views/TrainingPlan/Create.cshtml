@@ -1,0 +1,105 @@
+﻿@{
+	ViewData["Title"] = "Training Scheduler";
+}
+
+@section Styles {
+	<!-- FullCalendar CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
+
+	<!-- jQuery (required for FullCalendar) -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- FullCalendar JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+}
+
+
+<h2>Training Scheduler</h2>
+
+<!-- FullCalendar -->
+<div id="calendar"></div>
+
+<!-- Session Details Section -->
+<div id="sessionDetails">
+	<h3>Session Details</h3>
+	<p id="detailsText">Select a date to see session details.</p>
+	<input type="text" id="sessionDetailsInput" placeholder="Enter session details" />
+	<button id="saveSessionBtn">Save Training</button>
+</div>
+
+@section Scripts {
+
+	<!-- Script to handle calendar events and AJAX requests -->
+	<script>
+		$(document).ready(function () {
+			// Initialize FullCalendar
+			$('#calendar').fullCalendar({
+				selectable: true,
+				events: function (start, end, timezone, callback) {
+					// Get events (sessions) from the server (optional, if you want to display sessions on the calendar)
+					$.ajax({
+						url: '/TrainingPlan/GetSessionDetails',
+						dataType: 'json',
+						success: function (data) {
+							var events = [];
+							if (data.success) {
+								// Populate the events array with existing sessions
+								events.push({
+									title: data.sessionDetails,
+									start: data.date,
+								});
+							}
+							callback(events);
+						}
+					});
+				},
+				dayClick: function (date, jsEvent, view) {
+					// When a day is clicked, fetch session details for that date
+					$.ajax({
+						url: '/TrainingPlan/GetSessionDetails',
+						data: { date: date.format() },
+						type: 'GET',
+						success: function (data) {
+							if (data.success) {
+								$('#detailsText').text("Session: " + data.sessionDetails);
+							} else {
+								$('#detailsText').text("No session scheduled. Enter details below.");
+							}
+							$('#sessionDetailsInput').val('');
+						}
+					});
+				}
+			});
+
+			// Handle saving session details
+			$('#saveSessionBtn').click(function () {
+				var selectedDate = $('#calendar').fullCalendar('getDate');
+				var sessionDetails = $('#sessionDetailsInput').val();
+
+				if (!sessionDetails) {
+					alert('Please enter session details.');
+					return;
+				}
+
+				// Send the session details to the server
+				$.ajax({
+					url: '/TrainingPlan/ScheduleTraining',
+					type: 'POST',
+					data: {
+						date: selectedDate.format(),
+						sessionDetails: sessionDetails
+					},
+					success: function (data) {
+						if (data.success) {
+							alert('Training session scheduled successfully.');
+							$('#detailsText').text("Session scheduled for " + selectedDate.format());
+						} else {
+							alert(data.message);
+						}
+					}
+				});
+			});
+		});
+	</script>
+
+}

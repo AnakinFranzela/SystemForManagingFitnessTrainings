@@ -12,7 +12,7 @@ using SystemForManagingFitnessTrainings.Data;
 namespace SystemForManagingFitnessTrainings.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250204160634_Initial")]
+    [Migration("20250210064834_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -317,11 +317,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FrequencyOfTrainigns")
+                    b.Property<int>("Frequency")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")

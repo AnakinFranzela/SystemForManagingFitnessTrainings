@@ -1,6 +1,8 @@
-﻿namespace SystemForManagingFitnessTrainings.Services
+﻿using SystemForManagingFitnessTrainings.Services.IServices;
+
+namespace SystemForManagingFitnessTrainings.Services
 {
-    public class TrainingPlanService
+    public class TrainingPlanService : ITrainingPlanService
     {
     }
 }

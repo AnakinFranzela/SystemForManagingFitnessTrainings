@@ -314,11 +314,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FrequencyOfTrainigns")
+                    b.Property<int>("Frequency")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
