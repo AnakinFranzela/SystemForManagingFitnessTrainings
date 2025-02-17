@@ -1,1 +1,24 @@
-﻿
+﻿@model IEnumerable<SystemForManagingFitnessTrainings.Entities.TrainingPlan>
+
+<h2>Training Plans</h2>
+<a href="/trainingplan/create" class="btn btn-primary">Create New Plan</a>
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Frequency</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var plan in Model)
+    {
+        <tr>
+            <td>@plan.Name</td>
+            <td>@plan.Frequency</td>
+            <td>
+                <a href="/trainingplan/edit/@plan.Id" class="btn btn-warning">Edit</a>
+                <form method="post" action="/trainingplan/delete/@plan.Id" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
