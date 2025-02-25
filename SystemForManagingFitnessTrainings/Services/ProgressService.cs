@@ -14,18 +14,30 @@ namespace SystemForManagingFitnessTrainings.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Progress>> GetUserProgressAsync(string userId)
+        // Log a new progress entry
+        public async Task<Progress> LogProgressAsync(string userId, int exerciseId, DateOnly date, string results)
+        {
+            var progress = new Progress
+            {
+                UserId = userId,
+                ExerciseId = exerciseId,
+                Date = date,
+                Results = results
+            };
+
+            _context.ProgressRecords.Add(progress);
+            await _context.SaveChangesAsync();
+
+            return progress;
+        }
+
+        // Get progress entries for a user
+        public async Task<List<Progress>> GetUserProgressAsync(string userId)
         {
             return await _context.ProgressRecords
                 .Where(p => p.UserId == userId)
                 .Include(p => p.Exercise)
                 .ToListAsync();
-        }
-
-        public async Task AddProgressAsync(Progress progress)
-        {
-            _context.ProgressRecords.Add(progress);
-            await _context.SaveChangesAsync();
         }
     }
 }

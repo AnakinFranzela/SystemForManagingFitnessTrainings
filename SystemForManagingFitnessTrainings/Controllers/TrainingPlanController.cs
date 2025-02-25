@@ -1,95 +1,116 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Framework;
 using SystemForManagingFitnessTrainings.Entities;
+using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
     public class TrainingPlanController : Controller
     {
-        private readonly ITrainingPlanService _trainingPlanService;
-		private static Dictionary<DateOnly, string> trainingSessions = new Dictionary<DateOnly, string>();
+        private readonly TrainingPlanService _trainingPlanService;
 
-		public TrainingPlanController(ITrainingPlanService trainingPlanService)
+        public TrainingPlanController(TrainingPlanService trainingPlanService)
         {
             _trainingPlanService = trainingPlanService;
         }
 
-		public async Task<IActionResult> Index()
-		{
-			var plans = await _trainingPlanService.GetAllAsync();
-			return View(plans);
-		}
+        // GET: TrainingPlans/Create
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var hasPlan = await _trainingPlanService.UserHasTrainingPlanAsync(userId);
 
-		[HttpGet("create")]
-		public IActionResult Create()
-		{
-			return View();
-		}
+            if (hasPlan)
+            {
+                return RedirectToAction("Index", new { message = "You already have a training plan." });
+            }
 
-		[HttpPost("create")]
-		public async Task<IActionResult> Create(TrainingPlan plan)
-		{
-			if (ModelState.IsValid)
-			{
-				await _trainingPlanService.AddAsync(plan);
-				return RedirectToAction("Index");
-			}
-			return View(plan);
-		}
+            return View();
+        }
 
-		[HttpGet("edit/{id}")]
-		public async Task<IActionResult> Edit(int id)
-		{
-			var plan = await _trainingPlanService.GetByIdAsync(id);
-			if (plan == null) return NotFound();
-			return View(plan);
-		}
+        // POST: TrainingPlans/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Name,Frequency")] TrainingPlan trainingPlan)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var hasPlan = await _trainingPlanService.UserHasTrainingPlanAsync(userId);
 
-		[HttpPost("edit")]
-		public async Task<IActionResult> Edit(TrainingPlan plan)
-		{
-			if (ModelState.IsValid)
-			{
-				await _trainingPlanService.UpdateAsync(plan);
-				return RedirectToAction("Index");
-			}
-			return View(plan);
-		}
+                if (hasPlan)
+                {
+                    ModelState.AddModelError("", "You already have a training plan.");
+                    return View(trainingPlan);
+                }
 
-		[HttpPost("delete/{id}")]
-		public async Task<IActionResult> Delete(int id)
-		{
-			await _trainingPlanService.DeleteAsync(id);
-			return RedirectToAction("Index");
-		}
+                await _trainingPlanService.CreateTrainingPlanAsync(userId, trainingPlan.Name, trainingPlan.Frequency);
 
-		//// Action to get the session details for a specific date
-		//public JsonResult GetSessionDetails(DateOnly date)
-		//{
-		//	if (trainingSessions.ContainsKey(date))
-		//	{
-		//		return Json(new { success = true, sessionDetails = trainingSessions[date] });
-		//	}
-		//	else
-		//	{
-		//		return Json(new { success = false });
-		//	}
-		//}
+                return RedirectToAction(nameof(Index));
+            }
 
-		//// Action to save a session for a specific date (POST method)
-		//[HttpPost]
-		//public JsonResult ScheduleTraining(DateOnly date, string sessionDetails)
-		//{
-		//	if (trainingSessions.ContainsKey(date))
-		//	{
-		//		return Json(new { success = false, message = "Session already scheduled for this date." });
-		//	}
-		//	else
-		//	{
-		//		trainingSessions[date] = sessionDetails;  // Save the session
-		//		return Json(new { success = true });
-		//	}
-		//}
-	}
+            return View(trainingPlan);
+        }
+
+        // GET: TrainingPlans/Index
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var trainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(userId);
+
+            if (trainingPlan == null)
+            {
+                return RedirectToAction("Create"); // Redirect to create a new plan if none exists
+            }
+
+            return View(trainingPlan);
+        }
+
+        // GET: TrainingPlans/Edit/5
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var trainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(userId);
+
+            if (trainingPlan == null || trainingPlan.Id != id)
+            {
+                return NotFound();
+            }
+
+            return View(trainingPlan);
+        }
+
+        // POST: TrainingPlans/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Frequency")] TrainingPlan trainingPlan)
+        {
+            if (id != trainingPlan.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var success = await _trainingPlanService.UpdateTrainingPlanAsync(id, trainingPlan.Name, trainingPlan.Frequency);
+
+                if (success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            return View(trainingPlan);
+        }
+    }
 }

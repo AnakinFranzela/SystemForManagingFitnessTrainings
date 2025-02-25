@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Helpers;
@@ -7,33 +8,47 @@ using SystemForManagingFitnessTrainings.Services.IServices;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
-    [Route("progress")]
+    //[Route("progress")]
     public class ProgressController : Controller
     {
-        private readonly IProgressService _progressService;
+        private readonly ProgressService _progressService;
 
-        public ProgressController(IProgressService progressService)
+        public ProgressController(ProgressService progressService)
         {
             _progressService = progressService;
         }
 
+        // GET: Progress/Create
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Create()
         {
-            string userId = User.Identity.Name; // Retrieve logged-in user ID
-            var progress = await _progressService.GetUserProgressAsync(userId);
-            return View(progress);
+            return View();
         }
 
+        // POST: Progress/Create
         [HttpPost]
-        public async Task<IActionResult> Add(Progress progress)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Date,Results,ExerciseId")] Progress progress)
         {
             if (ModelState.IsValid)
             {
-                await _progressService.AddProgressAsync(progress);
-                return RedirectToAction("Index");
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _progressService.LogProgressAsync(userId, progress.ExerciseId, progress.Date, progress.Results);
+
+                return RedirectToAction(nameof(Index));
             }
+
             return View(progress);
+        }
+
+        // GET: Progress/Index
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var progresses = await _progressService.GetUserProgressAsync(userId);
+
+            return View(progresses);
         }
     }
 }

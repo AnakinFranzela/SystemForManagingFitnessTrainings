@@ -4,7 +4,7 @@ namespace SystemForManagingFitnessTrainings.Services.IServices
 {
     public interface IProgressService
     {
-        Task<IEnumerable<Progress>> GetUserProgressAsync(string userId);
-        Task AddProgressAsync(Progress progress);
+        Task<Progress> LogProgressAsync(string userId, int exerciseId, DateOnly date, string results);
+        Task<List<Progress>> GetUserProgressAsync(string userId);
     }
 }

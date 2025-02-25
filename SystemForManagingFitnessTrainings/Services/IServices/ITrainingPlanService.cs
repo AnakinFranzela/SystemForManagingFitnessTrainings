@@ -4,10 +4,10 @@ namespace SystemForManagingFitnessTrainings.Services.IServices
 {
     public interface ITrainingPlanService
     {
-		Task<IEnumerable<TrainingPlan>> GetAllAsync();
-		Task<TrainingPlan> GetByIdAsync(int id);
-		Task AddAsync(TrainingPlan plan);
-		Task UpdateAsync(TrainingPlan plan);
-		Task DeleteAsync(int id);
-	}
+        public Task<bool> UserHasTrainingPlanAsync(string userId);
+        public Task<TrainingPlan> CreateTrainingPlanAsync(string userId, string name, int frequency);
+        public Task<TrainingPlan> GetUserTrainingPlanAsync(string userId);
+        public Task<bool> UpdateTrainingPlanAsync(int id, string name, int frequency);
+
+    }
 }
