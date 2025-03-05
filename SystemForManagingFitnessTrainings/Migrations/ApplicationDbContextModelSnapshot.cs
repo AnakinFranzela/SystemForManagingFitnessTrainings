@@ -193,11 +193,13 @@ namespace SystemForManagingFitnessTrainings.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("FirstName")
-                        .HasColumnType("int");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LastName")
-                        .HasColumnType("int");
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -265,12 +267,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TrainingPlanId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TrainingPlanId");
 
                     b.ToTable("Exercises");
                 });
@@ -399,13 +396,6 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Exercise", b =>
-                {
-                    b.HasOne("SystemForManagingFitnessTrainings.Entities.TrainingPlan", null)
-                        .WithMany("Exercises")
-                        .HasForeignKey("TrainingPlanId");
-                });
-
             modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Progress", b =>
                 {
                     b.HasOne("SystemForManagingFitnessTrainings.Entities.Exercise", "Exercise")
@@ -440,11 +430,6 @@ namespace SystemForManagingFitnessTrainings.Migrations
                 {
                     b.Navigation("TrainingPlan")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingPlan", b =>
-                {
-                    b.Navigation("Exercises");
                 });
 #pragma warning restore 612, 618
         }

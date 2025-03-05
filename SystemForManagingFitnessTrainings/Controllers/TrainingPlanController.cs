@@ -4,16 +4,19 @@ using Microsoft.Build.Framework;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
+using SystemForManagingFitnessTrainings.ViewModels;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
     public class TrainingPlanController : Controller
     {
-        private readonly TrainingPlanService _trainingPlanService;
+        private readonly ITrainingPlanService _trainingPlanService;
+        private readonly IExerciseService _exerciseService;
 
-        public TrainingPlanController(TrainingPlanService trainingPlanService)
+        public TrainingPlanController(ITrainingPlanService trainingPlanService, IExerciseService exerciseService)
         {
             _trainingPlanService = trainingPlanService;
+            _exerciseService = exerciseService;
         }
 
         // GET: TrainingPlans/Create
@@ -22,6 +25,9 @@ namespace SystemForManagingFitnessTrainings.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var hasPlan = await _trainingPlanService.UserHasTrainingPlanAsync(userId);
+
+            var exercises = await _exerciseService.GetAllExercisesAsync();
+            ViewBag.Exercises = exercises;
 
             if (hasPlan)
             {
@@ -34,7 +40,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
         // POST: TrainingPlans/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Frequency")] TrainingPlan trainingPlan)
+        public async Task<IActionResult> Create([Bind("Name,Frequency,Exercises")] TrainingPlanViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -44,15 +50,20 @@ namespace SystemForManagingFitnessTrainings.Controllers
                 if (hasPlan)
                 {
                     ModelState.AddModelError("", "You already have a training plan.");
-                    return View(trainingPlan);
+                    return View(model);
                 }
 
-                await _trainingPlanService.CreateTrainingPlanAsync(userId, trainingPlan.Name, trainingPlan.Frequency);
+                // Create the training plan
+                var trainingPlan = await _trainingPlanService.CreateTrainingPlanAsync(userId, model.Name, model.Frequency, model.Exercises);
 
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(trainingPlan);
+            // Repopulate the dropdown if there are validation errors
+            var exercises = await _exerciseService.GetAllExercisesAsync();
+            ViewBag.Exercises = exercises;
+
+            return View(model);
         }
 
         // GET: TrainingPlans/Index
@@ -93,7 +104,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
         // POST: TrainingPlans/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Frequency")] TrainingPlan trainingPlan)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Frequency")] TrainingPlan trainingPlan, ApplicationUser user)
         {
             if (id != trainingPlan.Id)
             {
@@ -102,7 +113,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             if (ModelState.IsValid)
             {
-                var success = await _trainingPlanService.UpdateTrainingPlanAsync(id, trainingPlan.Name, trainingPlan.Frequency);
+                var success = await _trainingPlanService.UpdateTrainingPlanAsync(id, trainingPlan.Name, trainingPlan.Frequency, user.Exercises);
 
                 if (success)
                 {

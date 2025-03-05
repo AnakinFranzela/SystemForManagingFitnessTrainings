@@ -7,9 +7,9 @@ namespace SystemForManagingFitnessTrainings.Entities
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        public int FirstName { get; set; }
+        public string FirstName { get; set; }
         [Required]
-        public int LastName { get; set; }
+        public string LastName { get; set; }
         // One-to-One relationship with TrainingPlan
         public TrainingPlan TrainingPlan { get; set; }
 

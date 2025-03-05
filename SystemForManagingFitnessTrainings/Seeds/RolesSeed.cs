@@ -4,7 +4,7 @@ namespace SystemForManagingFitnessTrainings.Seeds
 {
     public class RolesSeed
     {
-        public static async void Seed(IApplicationBuilder applicationBuilder)
+        public static async Task SeedRoles(IApplicationBuilder applicationBuilder)
         {
             using (var scope = applicationBuilder.ApplicationServices.CreateScope())
             {

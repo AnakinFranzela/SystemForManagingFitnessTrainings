@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SystemForManagingFitnessTrainings.Data;
 using SystemForManagingFitnessTrainings.Entities;
+using SystemForManagingFitnessTrainings.Services.IServices;
 
 namespace SystemForManagingFitnessTrainings.Services
 {
-    public class ExerciseService
+    public class ExerciseService : IExerciseService
     {
         private readonly ApplicationDbContext _context;
 

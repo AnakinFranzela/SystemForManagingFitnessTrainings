@@ -11,9 +11,9 @@ namespace SystemForManagingFitnessTrainings.Controllers
     //[Route("progress")]
     public class ProgressController : Controller
     {
-        private readonly ProgressService _progressService;
+        private readonly IProgressService _progressService;
 
-        public ProgressController(ProgressService progressService)
+        public ProgressController(IProgressService progressService)
         {
             _progressService = progressService;
         }

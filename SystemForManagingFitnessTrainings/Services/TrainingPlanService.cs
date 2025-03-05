@@ -21,8 +21,9 @@ namespace SystemForManagingFitnessTrainings.Services
         }
 
         // Create a new training plan for a user
-        public async Task<TrainingPlan> CreateTrainingPlanAsync(string userId, string name, int frequency)
+        public async Task<TrainingPlan> CreateTrainingPlanAsync(string userId, string name, int frequency, ICollection<Exercise> exercises)
         {
+            ApplicationUser user = await _context.Users.Include(u => u.Exercises).FirstOrDefaultAsync(u => u.Id == userId);
             var trainingPlan = new TrainingPlan
             {
                 UserId = userId,
@@ -31,6 +32,9 @@ namespace SystemForManagingFitnessTrainings.Services
             };
 
             _context.TrainingPlans.Add(trainingPlan);
+
+            user.Exercises = exercises;
+            _context.Update(user);
             await _context.SaveChangesAsync();
 
             return trainingPlan;
@@ -40,14 +44,15 @@ namespace SystemForManagingFitnessTrainings.Services
         public async Task<TrainingPlan> GetUserTrainingPlanAsync(string userId)
         {
             return await _context.TrainingPlans
-                .Include(tp => tp.Exercises)
+                .Include(tp => tp.User.Exercises)
                 .FirstOrDefaultAsync(tp => tp.UserId == userId);
         }
 
         // Update a user's training plan
-        public async Task<bool> UpdateTrainingPlanAsync(int id, string name, int frequency)
+        public async Task<bool> UpdateTrainingPlanAsync(int id, string name, int frequency, ICollection<Exercise> exercises)
         {
             var trainingPlan = await _context.TrainingPlans.FindAsync(id);
+            var user = await _context.Users.Include(u => u.Exercises).FirstOrDefaultAsync(u => u.TrainingPlan.Id == id);
 
             if (trainingPlan == null)
             {
@@ -56,6 +61,7 @@ namespace SystemForManagingFitnessTrainings.Services
 
             trainingPlan.Name = name;
             trainingPlan.Frequency = frequency;
+            user.Exercises = exercises;
 
             _context.Update(trainingPlan);
             await _context.SaveChangesAsync();
