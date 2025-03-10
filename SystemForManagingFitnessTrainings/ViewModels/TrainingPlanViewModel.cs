@@ -10,7 +10,8 @@ namespace SystemForManagingFitnessTrainings.ViewModels
         public string Name { get; set; }
         [Required(ErrorMessage = "Полето \"Честота\" е задължително")]
         public int Frequency { get; set; }
-        public ICollection<Exercise> Exercises { get; set; }
-        public string UserId { get; set; }
+        public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
+        public ICollection<int> SelectedExercisesIds { get; set; } = new List<int>();
+        //public string? UserId { get; set; }
     }
 }

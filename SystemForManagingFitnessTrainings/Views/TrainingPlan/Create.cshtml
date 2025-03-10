@@ -18,7 +18,7 @@
 
 <h2>Training Scheduler</h2>
 
-@if (!ViewData.ModelState.IsValid && ViewData.ModelState[""].Errors.Any())
+@if (!ViewData.ModelState.IsValid@*  && ViewData.ModelState[""].Errors.Any() *@)
 {
 	<div class="alert alert-danger">
 		@Html.ValidationSummary(false, "", new { @class = "text-danger" })
@@ -42,13 +42,16 @@
 	</div>
 	<!-- Dropdown for selecting exercises -->
 	<div class="form-group">
-		<label>Select Exercises:</label>
-		<select name="SelectedExerciseIds" class="form-control" multiple>
+		<label asp-for="SelectedExercisesIds">Избери упражнения:</label>
+		<select asp-for="SelectedExercisesIds" asp-items="@(new MultiSelectList(Model.Exercises, "Id", "Name"))" class="form-control" multiple></select>
+		<span asp-validation-for="SelectedExercisesIds" class="text-danger"></span>
+		@* <select name="SelectedExerciseIds" class="form-control" multiple>
 			@foreach (var exercise in ViewBag.Exercises as ICollection<Exercise>)
 			{
-				<option value="@exercise.Id">@exercise.Name (@exercise.Category)</option>
+				<input asp-for="Exercises" type="checkbox" value="@exercise.Id" id="@exercise.Id">
+				<label asp-for="Exercises" for="@exercise.Id">@exercise.Name (@exercise.Category)</label>
 			}
-		</select>
+		</select> *@
 	</div>
 	<button type="submit" class="btn btn-primary">Create</button>
 </form>

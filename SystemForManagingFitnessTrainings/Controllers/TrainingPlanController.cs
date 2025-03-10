@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Framework;
 using SystemForManagingFitnessTrainings.Entities;
@@ -21,6 +23,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
         // GET: TrainingPlans/Create
         [HttpGet]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<IActionResult> Create()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -29,18 +32,23 @@ namespace SystemForManagingFitnessTrainings.Controllers
             var exercises = await _exerciseService.GetAllExercisesAsync();
             ViewBag.Exercises = exercises;
 
+            var viewModel = new TrainingPlanViewModel
+            {
+                Exercises = exercises
+            };
+
             if (hasPlan)
             {
                 return RedirectToAction("Index", new { message = "You already have a training plan." });
             }
 
-            return View();
+            return View(viewModel);
         }
 
         // POST: TrainingPlans/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Frequency,Exercises")] TrainingPlanViewModel model)
+        public async Task<IActionResult> Create(TrainingPlanViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -50,11 +58,11 @@ namespace SystemForManagingFitnessTrainings.Controllers
                 if (hasPlan)
                 {
                     ModelState.AddModelError("", "You already have a training plan.");
-                    return View(model);
+                    return View(viewModel);
                 }
 
                 // Create the training plan
-                var trainingPlan = await _trainingPlanService.CreateTrainingPlanAsync(userId, model.Name, model.Frequency, model.Exercises);
+                await _trainingPlanService.CreateTrainingPlanAsync(userId, viewModel.Name, viewModel.Frequency, viewModel.SelectedExercisesIds);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -63,7 +71,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
             var exercises = await _exerciseService.GetAllExercisesAsync();
             ViewBag.Exercises = exercises;
 
-            return View(model);
+            return View(viewModel);
         }
 
         // GET: TrainingPlans/Index

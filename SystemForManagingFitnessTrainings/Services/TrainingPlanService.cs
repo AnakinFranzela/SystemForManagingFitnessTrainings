@@ -21,23 +21,25 @@ namespace SystemForManagingFitnessTrainings.Services
         }
 
         // Create a new training plan for a user
-        public async Task<TrainingPlan> CreateTrainingPlanAsync(string userId, string name, int frequency, ICollection<Exercise> exercises)
+        public async Task CreateTrainingPlanAsync(string userId, string name, int frequency, ICollection<int> exercises)
         {
-            ApplicationUser user = await _context.Users.Include(u => u.Exercises).FirstOrDefaultAsync(u => u.Id == userId);
+            ApplicationUser? user = await _context.Users.Include(u => u.Exercises).FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"User with ID {userId} not found.");
+            }
             var trainingPlan = new TrainingPlan
             {
-                UserId = userId,
                 Name = name,
-                Frequency = frequency
+                Frequency = frequency,
+                UserId = userId
             };
 
             _context.TrainingPlans.Add(trainingPlan);
 
-            user.Exercises = exercises;
+            user.Exercises = await _context.Exercises.Where(e => exercises.Contains(e.Id)).ToListAsync();
             _context.Update(user);
             await _context.SaveChangesAsync();
-
-            return trainingPlan;
         }
 
         // Get a user's training plan
