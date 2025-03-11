@@ -2,6 +2,7 @@
 using SystemForManagingFitnessTrainings.Data;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Services.IServices;
+using SystemForManagingFitnessTrainings.ViewModels;
 
 namespace SystemForManagingFitnessTrainings.Services
 {
@@ -50,25 +51,32 @@ namespace SystemForManagingFitnessTrainings.Services
                 .FirstOrDefaultAsync(tp => tp.UserId == userId);
         }
 
-        // Update a user's training plan
-        public async Task<bool> UpdateTrainingPlanAsync(int id, string name, int frequency, ICollection<Exercise> exercises)
-        {
-            var trainingPlan = await _context.TrainingPlans.FindAsync(id);
-            var user = await _context.Users.Include(u => u.Exercises).FirstOrDefaultAsync(u => u.TrainingPlan.Id == id);
+        public async Task<TrainingPlan> GetTrainingPlanByIdAsync(int id) =>
+        await _context.TrainingPlans.Include(tp => tp.User).ThenInclude(u => u.Exercises).FirstOrDefaultAsync(tp => tp.Id == id);
 
-            if (trainingPlan == null)
-            {
-                return false;
-            }
+        // Update a user's training plan
+        public async Task UpdateTrainingPlanAsync(int id, string name, int frequency, ICollection<int> exerciseIds)
+        {
+            var trainingPlan = await _context.TrainingPlans.Include(tp => tp.User).ThenInclude(u => u.Exercises).FirstOrDefaultAsync(tp => tp.Id == id);
+            if (trainingPlan == null) throw new Exception("Plan not found.");
 
             trainingPlan.Name = name;
             trainingPlan.Frequency = frequency;
-            user.Exercises = exercises;
 
-            _context.Update(trainingPlan);
+            var exercises = await _context.Exercises.Where(e => exerciseIds.Contains(e.Id)).ToListAsync();
+            trainingPlan.User.Exercises = exercises;
+
             await _context.SaveChangesAsync();
+        }
 
-            return true;
+        public async Task DeleteTrainingPlanAsync(int id)
+        {
+            var trainingPlan = await _context.TrainingPlans.FindAsync(id);
+            if (trainingPlan != null)
+            {
+                _context.TrainingPlans.Remove(trainingPlan);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

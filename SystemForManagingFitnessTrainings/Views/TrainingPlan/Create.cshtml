@@ -42,16 +42,17 @@
 	</div>
 	<!-- Dropdown for selecting exercises -->
 	<div class="form-group">
-		<label asp-for="SelectedExercisesIds">Избери упражнения:</label>
-		<select asp-for="SelectedExercisesIds" asp-items="@(new MultiSelectList(Model.Exercises, "Id", "Name"))" class="form-control" multiple></select>
-		<span asp-validation-for="SelectedExercisesIds" class="text-danger"></span>
-		@* <select name="SelectedExerciseIds" class="form-control" multiple>
-			@foreach (var exercise in ViewBag.Exercises as ICollection<Exercise>)
-			{
-				<input asp-for="Exercises" type="checkbox" value="@exercise.Id" id="@exercise.Id">
-				<label asp-for="Exercises" for="@exercise.Id">@exercise.Name (@exercise.Category)</label>
-			}
-		</select> *@
+		<label>Select Exercises:</label>
+		@foreach (var exercise in Model.Exercises)
+		{
+			<div>
+				<input type="checkbox"
+					   name="SelectedExercisesIds"
+					   value="@exercise.Id"
+				@(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "") />
+				@exercise.Name (@exercise.Category)
+			</div>
+		}
 	</div>
 	<button type="submit" class="btn btn-primary">Create</button>
 </form>

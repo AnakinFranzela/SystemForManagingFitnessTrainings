@@ -21,5 +21,37 @@ else
         </ul>
 
         <a asp-controller="TrainingPlan" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Edit</a>
+        <button id="delete-btn" data-plan-id="@Model.Id" class="btn btn-danger">Delete Plan</button>
     </div>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#delete-btn').click(function () {
+                if (confirm("Are you sure you want to delete this Training Plan?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Delete", "TrainingPlan")',
+                        data: {
+                            id: '@Model.Id',
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                alert(response.message);
+                                window.location.href = '@Url.Action("Index", "TrainingPlan")';
+                            } else {
+                                alert("Deletion failed: " + response.message);
+                            }
+                        },
+                        error: function () {
+                            alert("An error occurred. Please try again.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 }

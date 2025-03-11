@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Framework;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Services;
@@ -90,46 +91,59 @@ namespace SystemForManagingFitnessTrainings.Controllers
         }
 
         // GET: TrainingPlans/Edit/5
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+            var plan = await _trainingPlanService.GetTrainingPlanByIdAsync(id);
+            if (plan == null) return NotFound();
+
+            var viewModel = new TrainingPlanViewModel
             {
-                return NotFound();
-            }
+                Id = plan.Id,
+                Name = plan.Name,
+                Frequency = plan.Frequency,
+                SelectedExercisesIds = plan.User.Exercises.Select(e => e.Id).ToList(),
+                Exercises = await _exerciseService.GetAllExercisesAsync()
+            };
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var trainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(userId);
-
-            if (trainingPlan == null || trainingPlan.Id != id)
-            {
-                return NotFound();
-            }
-
-            return View(trainingPlan);
+            return View(viewModel);
         }
 
-        // POST: TrainingPlans/Edit/5
+        // POST: TrainingPlans/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Frequency")] TrainingPlan trainingPlan, ApplicationUser user)
+        public async Task<IActionResult> Edit(TrainingPlanViewModel viewModel)
         {
-            if (id != trainingPlan.Id)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                viewModel.Exercises = await _exerciseService.GetAllExercisesAsync();
+                return View(viewModel);
             }
 
-            if (ModelState.IsValid)
-            {
-                var success = await _trainingPlanService.UpdateTrainingPlanAsync(id, trainingPlan.Name, trainingPlan.Frequency, user.Exercises);
-
-                if (success)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-
-            return View(trainingPlan);
+            await _trainingPlanService.UpdateTrainingPlanAsync(viewModel.Id.Value, viewModel.Name, viewModel.Frequency, viewModel.SelectedExercisesIds);
+            return RedirectToAction("Index");
         }
+
+        // GET: TrainingPlans/Delete
+        public async Task<JsonResult> Delete(int id)
+        {
+            try
+            {
+                await _trainingPlanService.DeleteTrainingPlanAsync(id);
+                return Json(new { success = true, message = "Успешно изтрит." });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Неуспешно изтриване." }); 
+            }
+        }
+
+        //// POST: TrainingPlans/DeleteConfirmed
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    await _trainingPlanService.DeleteTrainingPlanAsync(id);
+        //    return RedirectToAction(nameof(Index));
+        //}
     }
 }
