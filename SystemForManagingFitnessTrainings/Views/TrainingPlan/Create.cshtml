@@ -1,18 +1,18 @@
 ﻿@using SystemForManagingFitnessTrainings.Entities
 @{
-	ViewData["Title"] = "Training Scheduler";
+    ViewData["Title"] = "Training Scheduler";
 }
 @model SystemForManagingFitnessTrainings.ViewModels.TrainingPlanViewModel
 
 @section Styles {
-	<!-- FullCalendar CSS -->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
+    <!-- FullCalendar CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
 
-	<!-- jQuery (required for FullCalendar) -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery (required for FullCalendar) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-	<!-- FullCalendar JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
 }
 
 
@@ -20,41 +20,44 @@
 
 @if (!ViewData.ModelState.IsValid@*  && ViewData.ModelState[""].Errors.Any() *@)
 {
-	<div class="alert alert-danger">
-		@Html.ValidationSummary(false, "", new { @class = "text-danger" })
-	</div>
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </div>
 }
 
 <form asp-controller="TrainingPlan" asp-action="Create" method="post">
-	<input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Id" />
 
-	<div asp-validation-summary="All"></div>
+    <div asp-validation-summary="All"></div>
 
-	<div class="form-group">
-		<label asp-for="Name"></label>
-		<input asp-for="Name" class="form-control" />
-		<span asp-validation-for="Name" class="text-danger"></span>
-	</div>
-	<div class="form-group">
-		<label asp-for="Frequency"></label>
-		<input asp-for="Frequency" class="form-control" />
-		<span asp-validation-for="Frequency" class="text-danger"></span>
-	</div>
-	<!-- Dropdown for selecting exercises -->
-	<div class="form-group">
-		<label>Select Exercises:</label>
-		@foreach (var exercise in Model.Exercises)
-		{
-			<div>
-				<input type="checkbox"
-					   name="SelectedExercisesIds"
-					   value="@exercise.Id"
-				@(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "") />
-				@exercise.Name (@exercise.Category)
-			</div>
-		}
-	</div>
-	<button type="submit" class="btn btn-primary">Create</button>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Frequency"></label>
+        <input asp-for="Frequency" class="form-control" required />
+        <span asp-validation-for="Frequency" class="text-danger"></span>
+    </div>
+    <!-- Dropdown for selecting exercises -->
+    <div class="form-group" id="checkboxes-group">
+        <label>Select Exercises:</label>
+        @foreach (var exercise in Model.Exercises)
+        {
+            <div>
+                <input type="checkbox"
+                       name="SelectedExercisesIds"
+                       value="@exercise.Id"
+                @(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "")/>
+                @exercise.Name (@exercise.Category)
+            </div>
+        }
+    </div>
+    <span id="error-msg" style="color:red; display:none;">
+        Please select at least one exercise.
+    </span>
+    <button type="submit" class="btn btn-primary" id="submit-btn">Create</button>
 </form>
 
 <!-- FullCalendar -->
@@ -62,85 +65,12 @@
 
 <!-- Session Details Section -->
 <div id="sessionDetails">
-	<h3>Session Details</h3>
-	<p id="detailsText">Select a date to see session details.</p>
-	<input type="text" id="sessionDetailsInput" placeholder="Enter session details" />
-	<button id="saveSessionBtn">Save Training</button>
+    <h3>Session Details</h3>
+    <p id="detailsText">Select a date to see session details.</p>
+    <input type="text" id="sessionDetailsInput" placeholder="Enter session details" />
+    <button id="saveSessionBtn">Save Training</button>
 </div>
 
 @section Scripts {
-
-	<!-- Script to handle calendar events and AJAX requests -->
-	<script>
-		$(document).ready(function () {
-			// Initialize FullCalendar
-			$('#calendar').fullCalendar({
-				selectable: true,
-				events: function (start, end, timezone, callback) {
-					// Get events (sessions) from the server (optional, if you want to display sessions on the calendar)
-					$.ajax({
-						url: '/TrainingPlan/GetSessionDetails',
-						dataType: 'json',
-						success: function (data) {
-							var events = [];
-							if (data.success) {
-								// Populate the events array with existing sessions
-								events.push({
-									title: data.sessionDetails,
-									start: data.date,
-								});
-							}
-							callback(events);
-						}
-					});
-				},
-				dayClick: function (date, jsEvent, view) {
-					// When a day is clicked, fetch session details for that date
-					$.ajax({
-						url: '/TrainingPlan/GetSessionDetails',
-						data: { date: date.format() },
-						type: 'GET',
-						success: function (data) {
-							if (data.success) {
-								$('#detailsText').text("Session: " + data.sessionDetails);
-							} else {
-								$('#detailsText').text("No session scheduled. Enter details below.");
-							}
-							$('#sessionDetailsInput').val('');
-						}
-					});
-				}
-			});
-
-			// Handle saving session details
-			$('#saveSessionBtn').click(function () {
-				var selectedDate = $('#calendar').fullCalendar('getDate');
-				var sessionDetails = $('#sessionDetailsInput').val();
-
-				if (!sessionDetails) {
-					alert('Please enter session details.');
-					return;
-				}
-
-				// Send the session details to the server
-				$.ajax({
-					url: '/TrainingPlan/ScheduleTraining',
-					type: 'POST',
-					data: {
-						date: selectedDate.format(),
-						sessionDetails: sessionDetails
-					},
-					success: function (data) {
-						if (data.success) {
-							alert('Training session scheduled successfully.');
-							$('#detailsText').text("Session scheduled for " + selectedDate.format());
-						} else {
-							alert(data.message);
-						}
-					}
-				});
-			});
-		});
-	</script>
-
+    <script src="~/js/exercise-validation.js"></script>
 }

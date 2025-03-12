@@ -32,5 +32,7 @@ namespace SystemForManagingFitnessTrainings.Data
         public DbSet<TrainingPlan> TrainingPlans { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Progress> ProgressRecords { get; set; }
+        public DbSet<TrainingSession> TrainingSessions { get; set; }
+
     }
 }
