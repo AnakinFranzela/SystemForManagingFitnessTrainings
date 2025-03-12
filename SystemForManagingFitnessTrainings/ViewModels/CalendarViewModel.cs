@@ -7,6 +7,6 @@ namespace SystemForManagingFitnessTrainings.ViewModels
         [Required]
         public DateTime Date { get; set; }
         [Required]
-        public ICollection<int> ExerciseIds { get; set; } = new List<int>();
+        public TimeSpan Time { get; set; }
     }
 }

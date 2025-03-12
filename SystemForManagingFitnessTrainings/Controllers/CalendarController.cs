@@ -32,39 +32,46 @@ namespace SystemForManagingFitnessTrainings.Controllers
                 .Where(s => s.UserId == userId)
                 .Select(s => new {
                     id = s.Id,
-                    title = $"Workout ({s.Exercises.Count} exercises)",
-                    start = s.ScheduledDate.ToString("yyyy-MM-dd")
+                    title = $"Workout {s.User.TrainingPlan.Name} at {s.ScheduledDate:HH:mm}",
+                    start = s.ScheduledDate.ToString("yyyy-MM-ddTHH:mm")
                 })
                 .ToListAsync();
 
             return Json(sessions);
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetUserExercises()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users
-                .Where(u => u.Id == userId)
-                .SelectMany(u => u.Exercises.Select(e => new { e.Id, e.Name }))
-                .ToListAsync();
+        //[HttpGet]
+        //public async Task<JsonResult> GetUserExercises()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var user = await _context.Users
+        //        .Where(u => u.Id == userId)
+        //        .SelectMany(u => u.Exercises.Select(e => new { e.Id, e.Name }))
+        //        .ToListAsync();
 
-            return Json(user);
-        }
+        //    return Json(user);
+        //}
 
         [HttpPost]
-        public async Task<JsonResult> CreateSession([FromBody] CalendarViewModel model)
+        public async Task<JsonResult> CreateSession(DateTime selectedDate, TimeSpan time)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var exercises = await _context.Exercises
-                .Where(e => model.ExerciseIds.Contains(e.Id))
-                .ToListAsync();
+
+            var sessionDateTime = selectedDate + time;
+
+            // Check if a session already exists for the user on the same day
+            bool sessionExists = await _context.TrainingSessions
+                .AnyAsync(ts => ts.UserId == userId && ts.ScheduledDate.Date == sessionDateTime.Date);
+
+            if (sessionExists)
+            {
+                return Json(new { success = false, message = "You already have a workout scheduled for this day." });
+            }
 
             var session = new TrainingSession
             {
-                ScheduledDate = model.Date,
-                UserId = userId,
-                Exercises = exercises
+                ScheduledDate = sessionDateTime,
+                UserId = userId
             };
 
             _context.TrainingSessions.Add(session);

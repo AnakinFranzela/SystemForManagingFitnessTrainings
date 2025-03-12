@@ -11,12 +11,6 @@ namespace SystemForManagingFitnessTrainings.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "TrainingSessionId",
-                table: "Exercises",
-                type: "int",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "TrainingSessions",
                 columns: table => new
@@ -38,40 +32,16 @@ namespace SystemForManagingFitnessTrainings.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exercises_TrainingSessionId",
-                table: "Exercises",
-                column: "TrainingSessionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TrainingSessions_UserId",
                 table: "TrainingSessions",
                 column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Exercises_TrainingSessions_TrainingSessionId",
-                table: "Exercises",
-                column: "TrainingSessionId",
-                principalTable: "TrainingSessions",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Exercises_TrainingSessions_TrainingSessionId",
-                table: "Exercises");
-
             migrationBuilder.DropTable(
                 name: "TrainingSessions");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Exercises_TrainingSessionId",
-                table: "Exercises");
-
-            migrationBuilder.DropColumn(
-                name: "TrainingSessionId",
-                table: "Exercises");
         }
     }
 }

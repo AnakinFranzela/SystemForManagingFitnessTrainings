@@ -12,7 +12,7 @@ using SystemForManagingFitnessTrainings.Data;
 namespace SystemForManagingFitnessTrainings.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250312082508_Calendar")]
+    [Migration("20250312115904_Calendar")]
     partial class Calendar
     {
         /// <inheritdoc />
@@ -270,12 +270,7 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TrainingSessionId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TrainingSessionId");
 
                     b.ToTable("Exercises");
                 });
@@ -426,13 +421,6 @@ namespace SystemForManagingFitnessTrainings.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Exercise", b =>
-                {
-                    b.HasOne("SystemForManagingFitnessTrainings.Entities.TrainingSession", null)
-                        .WithMany("Exercises")
-                        .HasForeignKey("TrainingSessionId");
-                });
-
             modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.Progress", b =>
                 {
                     b.HasOne("SystemForManagingFitnessTrainings.Entities.Exercise", "Exercise")
@@ -478,11 +466,6 @@ namespace SystemForManagingFitnessTrainings.Migrations
                 {
                     b.Navigation("TrainingPlan")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SystemForManagingFitnessTrainings.Entities.TrainingSession", b =>
-                {
-                    b.Navigation("Exercises");
                 });
 #pragma warning restore 612, 618
         }
