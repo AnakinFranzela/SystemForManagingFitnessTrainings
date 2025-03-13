@@ -1,7 +1,11 @@
 ﻿@{
 	ViewData["Title"] = "Workout Calendar";
 }
-<h1 align="center">Training Sessions</h1>
+@section Styles {
+	<link rel="stylesheet" href="~/css/calendar/calendar-text-wrapping.css">
+}
+
+<h1 align="center">Тренировъчен календар</h1>
 <div id="calendar"></div>
 
 <!-- Modal for adding sessions -->
@@ -9,15 +13,16 @@
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Schedule Workout for <span id="modalDate"></span></h5>
+				<h5 class="modal-title">Насрочване на тренировка за <span id="modalDate"></span></h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
-				<label>Choose Time:</label>
+				<label>Избери час:</label>
 				<input type="time" id="sessionTime" class="form-control" />
 			</div>
 			<div class="modal-footer">
-				<button id="saveSessionBtn" class="btn btn-primary">Save Workout</button>
+				<button id="saveSessionBtn" class="btn btn-primary">Запази</button>
+				<button id="deleteSessionBtn" class="btn btn-danger">Изтрий</button>
 			</div>
 		</div>
 	</div>
@@ -25,119 +30,106 @@
 
 @section Scripts {
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/bg.js"></script>
 
 	<script>
 		$(document).ready(function () {
 			var calendarEl = document.getElementById('calendar');
-			var selectedDate;
+			var selectedDate, selectedSessionId;
 
 			var calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView: 'dayGridMonth',
+				locale: 'bg',
 				events: '/Calendar/GetSessions',
+				buttonText: {
+				today: "Днес"
+				},
+
 				dateClick: function (info) {
+					if (info.dateStr < todayDate()) {
+						alert('Не може да насрочвате тренировка в отминали дати.');
+						return;
+					}
+					console.log("Date clicked:", info.dateStr); // Debugging
+
 					selectedDate = info.dateStr;
+					selectedSessionId = null;
 					$('#modalDate').text(selectedDate);
 					$('#sessionTime').val('12:00'); // default time
+					$('#deleteSessionBtn').addClass('d-none'); // Hide delete button 
+					$('#scheduleModal').modal('show');
+				},
+
+				eventClick: function (info) {
+					selectedSessionId = info.event.id;
+					selectedDate = info.event.startStr.split('T')[0];
+					let sessionTime = info.event.start.toISOString().substring(11,16);
+					$('#sessionTime').val(sessionTime);
+					$('#deleteSessionBtn').removeClass('d-none'); // Show delete button for existing sessions
 					$('#scheduleModal').modal('show');
 				}
 			});
 
 			calendar.render();
 
-		$('#saveSessionBtn').click(function () {
-			var time = $('#sessionTime').val();
-			if (!time) {
-				alert("Please select a time.");
-				return;
+			$('#saveSessionBtn').click(function () {
+				var time = $('#sessionTime').val();
+				var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
+				var dataPayload = selectedSessionId
+				? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
+				: { selectedDate: selectedDate, time: time };
+
+				if (!time) {
+					alert("Please select a time.");
+					return;
+				}
+
+				$.ajax({
+					url: url,
+					type: 'POST',
+					data: dataPayload,
+					success: function (response) {
+						if (response.success) {
+							$('#scheduleModal').modal('hide');
+							calendar.refetchEvents();
+						} else {
+							alert(response.message); // Displays specific backend validation message
+						}
+					},
+					error: function () {
+						alert('An error occurred while scheduling.');
+					}
+				});
+
+
+			});
+
+			$('#deleteSessionBtn').off('click').on('click', function () {
+				if(confirm('Сигурни ли сте, че искате да изтриете тази тренировка?')) {
+					$.post('/Calendar/DeleteSession', { id: selectedSessionId }, function(response) {
+						if(response.success) {
+							$('#scheduleModal').modal('hide');
+							calendar.refetchEvents();
+							}
+						else {
+							alert(response.message);
+						}
+					});
+				};
+			});
+
+			function todayDate() {
+				let now = new Date();
+				return nowISOString(now);
 			}
 
-			$.ajax({
-				url: '/Calendar/CreateSession',
-				type: 'POST',
-				data: {
-					selectedDate: selectedDate,
-					time: time
-				},
-				success: function (response) {
-					if (response.success) {
-						$('#scheduleModal').modal('hide');
-						calendar.refetchEvents();
-					} else {
-						alert(response.message); // Displays specific backend validation message
-					}
-				},
-				error: function () {
-					alert('An error occurred while scheduling.');
-				}
-			});
-		});
+			function nowISOString(now) {
+				return now.getFullYear() + '-' +
+					('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+					('0' + now.getDate()).slice(-2);
+			}
 		});
 	</script>
-
-	@* <script>
-        $(document).ready(function () {
-            var calendarEl = document.getElementById('calendar');
-
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: '/Calendar/GetSessions',
-                dateClick: function (info) {
-                    $('#selectedDate').text(info.dateStr);
-                    $('#sessionDate').val(info.dateStr);
-
-                    // Load user-specific exercises clearly
-                    $.getJSON('/Calendar/GetUserExercises', function (exercises) {
-                        var htmlContent = '';
-                        exercises.forEach(e => {
-                            html += `
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="${e.id}" id="exercise-${e.id}">
-                                <label class="form-check-label" for="exercise-${e.id}">${e.name}</label>
-                            </div>`;
-                        });
-                        $('#exerciseList').html(html);
-                    });
-
-                    $('#addSessionModal').modal('show');
-                }
-            });
-
-            calendar.render();
-
-            $('#saveSessionBtn').click(function () {
-                let selectedExerciseIds = $('#exerciseList input:checked')
-                    .map((_, e) => parseInt(e.value)).get();
-
-                if (selectedExerciseIds.length === 0) {
-                    alert('Select at least one exercise.');
-                    return;
-                }
-
-                $.ajax({
-                    url: '/Calendar/CreateSession',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        Date: $('#sessionDate').val(),
-                        SelectedExerciseIds: selectedExerciseIds
-                    }),
-                    success: function (response) {
-                        if (response.success) {
-                            $('#addSessionModal').modal('hide');
-                            calendar.refetchEvents();
-                        } else {
-                            alert('Could not save session.');
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred.');
-                    }
-                });
-            });
-
-            calendar.render();
-        });
-    </script> *@
 }

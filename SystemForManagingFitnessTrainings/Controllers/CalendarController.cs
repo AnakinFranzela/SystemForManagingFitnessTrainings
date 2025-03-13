@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using SystemForManagingFitnessTrainings.Data;
 using SystemForManagingFitnessTrainings.Entities;
+using SystemForManagingFitnessTrainings.Services.IServices;
 using SystemForManagingFitnessTrainings.ViewModels;
 
 namespace SystemForManagingFitnessTrainings.Controllers
@@ -11,11 +12,11 @@ namespace SystemForManagingFitnessTrainings.Controllers
     [Authorize]
     public class CalendarController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICalendarService _calendarService;
 
-        public CalendarController(ApplicationDbContext context)
+        public CalendarController(ICalendarService calendarService)
         {
-            _context = context;
+            _calendarService = calendarService;
         }
 
         public IActionResult Index()
@@ -27,30 +28,9 @@ namespace SystemForManagingFitnessTrainings.Controllers
         public async Task<JsonResult> GetSessions()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var sessions = await _context.TrainingSessions
-                .Where(s => s.UserId == userId)
-                .Select(s => new {
-                    id = s.Id,
-                    title = $"Workout {s.User.TrainingPlan.Name} at {s.ScheduledDate:HH:mm}",
-                    start = s.ScheduledDate.ToString("yyyy-MM-ddTHH:mm")
-                })
-                .ToListAsync();
-
+            var sessions = await _calendarService.GetSessionsAsync(userId);
             return Json(sessions);
         }
-
-        //[HttpGet]
-        //public async Task<JsonResult> GetUserExercises()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var user = await _context.Users
-        //        .Where(u => u.Id == userId)
-        //        .SelectMany(u => u.Exercises.Select(e => new { e.Id, e.Name }))
-        //        .ToListAsync();
-
-        //    return Json(user);
-        //}
 
         [HttpPost]
         public async Task<JsonResult> CreateSession(DateTime selectedDate, TimeSpan time)
@@ -59,41 +39,54 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             var sessionDateTime = selectedDate + time;
 
+            if (sessionDateTime < DateTime.Now)
+                return Json(new { success = false, message = "Не може да насрочвате тренировка за отминали дати." });
+
             // Check if a session already exists for the user on the same day
-            bool sessionExists = await _context.TrainingSessions
-                .AnyAsync(ts => ts.UserId == userId && ts.ScheduledDate.Date == sessionDateTime.Date);
+            bool sessionExists = await _calendarService.SessionExistsAsync(userId, sessionDateTime);
 
             if (sessionExists)
             {
                 return Json(new { success = false, message = "You already have a workout scheduled for this day." });
             }
 
-            var session = new TrainingSession
-            {
-                ScheduledDate = sessionDateTime,
-                UserId = userId
-            };
-
-            _context.TrainingSessions.Add(session);
-            await _context.SaveChangesAsync();
+            await _calendarService.CreateSessionAsync(userId, sessionDateTime);
 
             return Json(new { success = true });
         }
-    
+
+        [HttpPost]
+        public async Task<JsonResult> EditSession(int selectedSessionId, DateTime selectedDate, TimeSpan time)
+        {
+            var newDateTime = selectedDate + time;
+
+            if (newDateTime < DateTime.Now)
+                return Json(new { success = false, message = "Не може да редактирате тренировка към миналото." });
+
+            try
+            {
+                await _calendarService.UpdateSessionAsync(selectedSessionId, newDateTime);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Не е намерена насрочена тренировка" });
+            }
+        }
 
         // Delete a session
         [HttpPost]
         public async Task<IActionResult> DeleteSession(int id)
         {
-            var session = await _context.TrainingSessions.FindAsync(id);
-            if (session != null)
+            try
             {
-                _context.TrainingSessions.Remove(session);
-                await _context.SaveChangesAsync();
-                return Ok();
+                await _calendarService.DeleteSessionAsync(id);
+                return Json(new { success = true });
             }
-
-            return NotFound();
+            catch
+            {
+                return Json(new { success = false, message = "Не е намерена насрочена тренировка" });
+            }
         }
     }
 }
