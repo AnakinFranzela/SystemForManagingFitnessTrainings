@@ -14,8 +14,13 @@
 }
 
 .fc-daygrid-event-dot{
-    border: unset;
-    padding-left: -50px;
+    /*border: unset;*/
+    /*padding-left: -50px;*/
+    
     margin-left: -2px;
-    margin-bottom: -10px;
+   /* margin-bottom: 0px;*/
+}
+
+.fc-event-time{
+    width: 38px;
 }
