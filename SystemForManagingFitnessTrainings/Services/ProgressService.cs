@@ -37,7 +37,19 @@ namespace SystemForManagingFitnessTrainings.Services
             return await _context.ProgressRecords
                 .Where(p => p.UserId == userId)
                 .Include(p => p.Exercise)
+                .OrderByDescending(p => p.Date)
                 .ToListAsync();
+        }
+
+        public async Task DeleteProgressAsync(int id, string userId)
+        {
+            var record = await _context.ProgressRecords.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+
+            if (record != null)
+            {
+                _context.ProgressRecords.Remove(record);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

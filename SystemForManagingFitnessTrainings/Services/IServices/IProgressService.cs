@@ -6,5 +6,6 @@ namespace SystemForManagingFitnessTrainings.Services.IServices
     {
         Task<Progress> LogProgressAsync(string userId, int exerciseId, DateOnly date, string results);
         Task<List<Progress>> GetUserProgressAsync(string userId);
+        Task DeleteProgressAsync(int id, string userId);
     }
 }
