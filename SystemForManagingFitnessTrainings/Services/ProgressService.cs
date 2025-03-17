@@ -41,6 +41,11 @@ namespace SystemForManagingFitnessTrainings.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Progress>> GetExerciseProgressAsync(string userId, int exerciseId)
+        {
+            return await _context.ProgressRecords.Where(p => p.UserId == userId && p.ExerciseId == exerciseId).OrderBy(p => p.Date).ToListAsync();
+        }
+
         public async Task DeleteProgressAsync(int id, string userId)
         {
             var record = await _context.ProgressRecords.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);

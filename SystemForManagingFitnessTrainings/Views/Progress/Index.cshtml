@@ -1,4 +1,5 @@
-﻿@model List<SystemForManagingFitnessTrainings.Entities.Progress>
+﻿@* @using SystemForManagingFitnessTrainings.Entities *@
+@model List<SystemForManagingFitnessTrainings.Entities.Progress>
 
 <h2>Моят прогрес</h2>
 <table class="table">
@@ -21,21 +22,118 @@
 	</tbody>
 </table>
 
-<canvas id="progressChart" width="1000" height="200"></canvas>
+<!-- Dropdown to choose which Exercise to chart -->
+<div class="form-group">
+    <label for="exerciseFilter">Select Exercise:</label>
+    <select id="exerciseFilter" class="form-control">
+        <option value="">-- Choose an exercise --</option>
+        @foreach (var ex in ViewBag.TrainingPlan.User.Exercises)
+        {
+            <option value="@ex.Id">@ex.Name</option>
+        }
+    </select>
+</div>
 
-@section Scripts{
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		var ctx = document.getElementById('progressChart').getContext('2d');
-		var chart = new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: @Html.Raw(Json.Serialize(Model.Select(m => m.Date.ToShortDateString()))),
-				datasets: [{
-					label: 'Progress',
-					data: @Html.Raw(Json.Serialize(Model.Select(m => m.Results).ToArray())) // Adjust for numeric data
-				}]
-			}
-		});
-	</script>
+<button id="filterBtn" class="btn btn-primary">Show Chart</button>
+
+<hr />
+
+<!-- The chart canvas -->
+<canvas id="progressChart"></canvas>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let progressChart; // We'll store the Chart instance to update it
+
+        // On "Show Chart" button click, load data from server for selected exercise
+        document.getElementById('filterBtn').addEventListener('click', function () {
+            var exerciseId = document.getElementById('exerciseFilter').value;
+            if (!exerciseId) {
+                alert('Please select an exercise!');
+                return;
+            }
+            loadChartData(exerciseId);
+        });
+
+        function loadChartData(exerciseId) {
+            fetch('/Progress/GetExerciseProgressData?exerciseId=' + exerciseId)
+                .then(response => response.json())
+                .then(data => {
+                    // data is an array of objects: { date, weight, reps, timeSec }
+
+                    // Extract arrays for Chart labels and each metric
+                    const labels = data.map(d => d.date);
+                    const weights = data.map(d => d.weight);
+                    const reps = data.map(d => d.reps);
+                    const times = data.map(d => d.timeSec);
+
+                    // If the chart already exists, destroy it before creating new
+                    if (progressChart) {
+                        progressChart.destroy();
+                    }
+
+                    // Create or re-create a line chart with multiple datasets
+                    const ctx = document.getElementById('progressChart').getContext('2d');
+                    progressChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Weight (kg)',
+                                    data: weights,
+                                    yAxisID: 'yAxisWeight'
+                                },
+                                {
+                                    label: 'Reps',
+                                    data: reps,
+                                    yAxisID: 'yAxisReps'
+                                },
+                                {
+                                    label: 'Time (s)',
+                                    data: times,
+                                    yAxisID: 'yAxisTime'
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                yAxisWeight: {
+                                    type: 'linear',
+                                    position: 'left',
+                                    title: {
+                                        display: true,
+                                        text: 'Weight (kg)'
+                                    }
+                                },
+                                yAxisReps: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: 'Reps'
+                                    },
+                                    grid: {
+                                        drawOnChartArea: false // separate left & right
+                                    }
+                                },
+                                yAxisTime: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: 'Time (seconds)'
+                                    },
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error(err));
+        }
+    </script>
 }

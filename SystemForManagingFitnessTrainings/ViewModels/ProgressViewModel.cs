@@ -10,7 +10,14 @@ namespace SystemForManagingFitnessTrainings.ViewModels
         public int ExerciseId { get; set; }
         [Required(ErrorMessage = "Полето \"Дата\" е задължително")]
         public DateOnly Date { get; set; }
-        [Required(ErrorMessage = "Полето \"Резултати\" е задължително")]
-        public string Results { get; set; }
+        [Required]
+        [Range(0, 1500)]
+        public int Weight { get; set; }
+        [Required]
+        [Range(0, 1000)]
+        public int Repetition { get; set; }
+        [Required]
+        [Range(0, 3600)]
+        public int TimeInSeconds { get; set; }
     }
 }
