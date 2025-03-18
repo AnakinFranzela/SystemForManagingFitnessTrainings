@@ -5,7 +5,7 @@
         public static string ToResultString(int weight, int reps, int timeInSeconds)
         {
             // e.g. "weight=80.5;reps=12;time=45"
-            return $"weight={weight};reps={reps};time={timeInSeconds}";
+            return $"weight={weight}; repetitions={reps}; time={timeInSeconds}";
         }
 
         public static (int Weight, int Reps, int TimeInSeconds) FromResultString(string results)
@@ -30,7 +30,7 @@
 
                 if (key == "weight" && int.TryParse(value, out var w))
                     weight = w;
-                else if (key == "reps" && int.TryParse(value, out var r))
+                else if (key == "repetitions" && int.TryParse(value, out var r))
                     reps = r;
                 else if (key == "time" && int.TryParse(value, out var t))
                     time = t;
