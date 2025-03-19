@@ -4,12 +4,12 @@ using System.Diagnostics;
 
 namespace SystemForManagingFitnessTrainings.Enums
 {
-    public enum Category
+    public enum Categories
     {
         [Display(Name = "Кардио")]
         Cardio,
         [Display(Name = "Силови тренировки")]
-        PowerTraining,
+        Strength,
         [Display(Name = "Издръжливост")]
         Endurance,
         [Display(Name = "Калистеника")]

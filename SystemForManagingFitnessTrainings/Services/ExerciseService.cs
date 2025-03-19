@@ -20,6 +20,11 @@ namespace SystemForManagingFitnessTrainings.Services
             return await _context.Exercises.ToListAsync();
         }
 
+        public async Task<Exercise> GetExerciseByIdAsync(int id)
+        {
+            return await _context.Exercises.FindAsync(id);
+        }
+
         // Get exercises by category
         public async Task<List<Exercise>> GetExercisesByCategoryAsync(string category)
         {

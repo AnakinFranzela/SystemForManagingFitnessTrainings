@@ -1,18 +1,18 @@
 ﻿@model SystemForManagingFitnessTrainings.Entities.TrainingPlan
 
-<h2>Your Training Plan</h2>
+<h2>Товят тренировъчен план</h2>
 
 @if (Model == null)
 {
-    <p>You don't have a training plan yet. <a asp-controller="TrainingPlan" asp-action="Create">Create one now</a>.</p>
+    <p>Все още нямаш тренировъчен план? <a asp-controller="TrainingPlan" asp-action="Create">Направи един сега</a>.</p>
 }
 else
 {
     <div>
         <h3>@Model.Name</h3>
-        <p>Frequency: @Model.Frequency times per week</p>
+        <p>Честота: @Model.Frequency пъти в седмицата</p>
 
-        <h4>Exercises:</h4>
+        <h4>Упражнения:</h4>
         <ul>
             @foreach (var exercise in Model.User.Exercises)
             {
@@ -20,8 +20,8 @@ else
             }
         </ul>
 
-        <a asp-controller="TrainingPlan" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Edit</a>
-        <button id="delete-btn" data-plan-id="@Model.Id" class="btn btn-danger">Delete Plan</button>
+        <a asp-controller="TrainingPlan" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Редактиране</a>
+        <button id="delete-btn" data-plan-id="@Model.Id" class="btn btn-danger">Изтрий планът</button>
     </div>
 }
 

@@ -1,26 +1,34 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SystemForManagingFitnessTrainings.Data;
-using SystemForManagingFitnessTrainings.Entities;
+using SystemForManagingFitnessTrainings.ViewModels;
+using SystemForManagingFitnessTrainings.Enums;
 using SystemForManagingFitnessTrainings.Services;
+using SystemForManagingFitnessTrainings.Services.IServices;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
     public class ExerciseController : Controller
     {
-        private readonly ExerciseService _exerciseService;
+        private readonly IExerciseService _exerciseService;
 
-        public ExerciseController(ExerciseService exerciseService)
+        public ExerciseController(IExerciseService exerciseService)
         {
             _exerciseService = exerciseService;
         }
 
         // GET: Exercises/Index
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category)
         {
-            var exercises = await _exerciseService.GetAllExercisesAsync();
+            ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)));
+
+            var exercises = category.IsNullOrEmpty() || category == "All" ? await _exerciseService.GetAllExercisesAsync() : await _exerciseService.GetExercisesByCategoryAsync(category);
+
+            ViewBag.SelectedCategory = category ?? "All";
             return View(exercises);
         }
 
@@ -29,6 +37,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
         [Authorize(Roles = "Admin")] // Only admins can create exercises
         public IActionResult Create()
         {
+            ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)));
             return View();
         }
 
@@ -36,51 +45,53 @@ namespace SystemForManagingFitnessTrainings.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")] // Only admins can create exercises
-        public async Task<IActionResult> Create([Bind("Name,Category,Description")] Exercise exercise)
+        public async Task<IActionResult> Create(ExerciseViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                await _exerciseService.CreateExerciseAsync(exercise.Name, exercise.Category, exercise.Description);
+                await _exerciseService.CreateExerciseAsync(viewModel.Name, viewModel.Category.ToString(), viewModel.Description);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(exercise);
+            ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)), viewModel.Category);
+            return View(viewModel);
         }
 
         // GET: Exercises/Edit/5
         [HttpGet]
         [Authorize(Roles = "Admin")] // Only admins can edit exercises
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var exercise = await _exerciseService.GetExerciseByIdAsync(id);
 
-            var exercise = await _exerciseService.GetExercisesByCategoryAsync("All");/*FirstOrDefaultAsync(e => e.Id == id.Value);*/
+            var viewModel = new ExerciseViewModel
+            {
+                Name = exercise.Name,
+                Category = Enum.Parse<Categories>(exercise.Category),
+                Description = exercise.Description
+            };
 
             if (exercise == null)
             {
                 return NotFound();
             }
 
-            return View(exercise);
+            ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)), viewModel.Category);
+
+            return View(viewModel);
         }
 
         // POST: Exercises/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")] // Only admins can edit exercises
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Category,Description")] Exercise exercise)
+        public async Task<IActionResult> Edit(int id, ExerciseViewModel viewModel)
         {
-            if (id != exercise.Id)
-            {
-                return NotFound();
-            }
+            //var errors = ModelState.Values.SelectMany(v => v.Errors);
 
             if (ModelState.IsValid)
             {
-                var success = await _exerciseService.UpdateExerciseAsync(id, exercise.Name, exercise.Category, exercise.Description);
+                var success = await _exerciseService.UpdateExerciseAsync(id, viewModel.Name, viewModel.Category.ToString(), viewModel.Description);
 
                 if (success)
                 {
@@ -88,43 +99,24 @@ namespace SystemForManagingFitnessTrainings.Controllers
                 }
             }
 
-            return View(exercise);
+            ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)), viewModel.Category);
+            return View(viewModel);
         }
 
         // GET: Exercises/Delete/5
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = "Admin")] // Only admins can delete exercises
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<JsonResult> Delete(int id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                await _exerciseService.DeleteExerciseAsync(id);
+                return Json(new { success = true, message = "Успешно изтрит." });
             }
-
-            var exercise = await _exerciseService.GetExercisesByCategoryAsync("All");/*FirstOrDefaultAsync(e => e.Id == id.Value);*/
-
-            if (exercise == null)
+            catch
             {
-                return NotFound();
+                return Json(new { success = false, message = "Неуспешно изтриване." });
             }
-
-            return View(exercise);
-        }
-
-        // POST: Exercises/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")] // Only admins can delete exercises
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var success = await _exerciseService.DeleteExerciseAsync(id);
-
-            if (success)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            return NotFound();
         }
     }
 }

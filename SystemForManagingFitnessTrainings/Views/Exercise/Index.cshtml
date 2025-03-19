@@ -1,0 +1,81 @@
+﻿@model List<SystemForManagingFitnessTrainings.Entities.Exercise>
+
+<h2>Упражнения</h2>
+
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Име</th>
+			<th>
+				Категория
+				<form method="get" asp-controller="Exercise" asp-action="Index" class="mb-3">
+					<select name="category" @* asp-items="ViewBag.Categories" *@ class="form-select" onchange="this.form.submit()">
+						<option value="All" selected="--Всички категории--">--Всички категории--</option>
+						@foreach (SelectListItem cat in ViewBag.Categories)
+						{
+							<option value="@cat.Text" @* selected="@cat.Text" *@>@cat.Text</option>
+						}
+					</select>
+				</form>
+			</th>
+			<th>Описание</th>
+			@if (User.IsInRole("Admin"))
+			{
+			<th></th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var exercise in Model)
+		{
+			<tr>
+				<td>@exercise.Name</td>
+				<td>@exercise.Category</td>
+				<td>@exercise.Description</td>
+				@if (User.IsInRole("Admin"))
+				{
+					<td>
+						<a asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-secondary">Редактирай</a>
+						<button data-exercise-id="@exercise.Id" class="btn btn-danger delete-btn">Изтрий</button>
+					</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>
+
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			// Attach event handler to all buttons with class "delete-btn"
+			$('.delete-btn').click(function () {
+				var button = $(this);
+				var exerciseId = button.data('exercise-id');
+
+				if (confirm("Сигурни ли сте, че искате да изтриете упражнението?")) {
+					$.ajax({
+						type: "POST",
+						url: '@Url.Action("Delete", "Exercise")',
+						data: {
+							id: exerciseId,
+							__RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+						},
+						success: function (response) {
+							if (response.success) {
+								alert(response.message);
+								// Remove the deleted row immediately without refresh
+								button.closest('tr').remove();
+							} else {
+								alert("Неуспешно изтриване: " + response.message);
+							}
+						},
+						error: function () {
+							alert("Възникна грешка. Моля опитайте пак.");
+						}
+					});
+				}
+			});
+		});
+	</script>
+}
