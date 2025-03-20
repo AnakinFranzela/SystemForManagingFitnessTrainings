@@ -24,11 +24,22 @@ namespace SystemForManagingFitnessTrainings.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string category)
         {
-            ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)));
+            var categoriesList = Enum.GetValues(typeof(Categories))
+        .Cast<Categories>()
+        .Select(c => new SelectListItem
+        {
+            Text = c.ToString(),
+            Value = c.ToString(),
+            Selected = (c.ToString() == category)
+        }).ToList();
 
-            var exercises = category.IsNullOrEmpty() || category == "All" ? await _exerciseService.GetAllExercisesAsync() : await _exerciseService.GetExercisesByCategoryAsync(category);
+            ViewBag.Categories = categoriesList;
 
-            ViewBag.SelectedCategory = category ?? "All";
+            ViewBag.SelectedCategory = string.IsNullOrEmpty(category) ? "All" : category;
+
+            var exercises = string.IsNullOrEmpty(category) || category == "All"
+                ? await _exerciseService.GetAllExercisesAsync()
+                : await _exerciseService.GetExercisesByCategoryAsync(category);
             return View(exercises);
         }
 

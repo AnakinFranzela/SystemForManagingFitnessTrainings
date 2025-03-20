@@ -9,11 +9,11 @@
 			<th>
 				Категория
 				<form method="get" asp-controller="Exercise" asp-action="Index" class="mb-3">
-					<select name="category" @* asp-items="ViewBag.Categories" *@ class="form-select" onchange="this.form.submit()">
-						<option value="All" selected="--Всички категории--">--Всички категории--</option>
+					<select name="category" class="form-select" onchange="this.form.submit()">
+						<option value="All" selected="@(ViewBag.SelectedCategory == "All")">--Всички категории--</option>
 						@foreach (SelectListItem cat in ViewBag.Categories)
 						{
-							<option value="@cat.Text" @* selected="@cat.Text" *@>@cat.Text</option>
+							<option value="@cat.Value" selected="@(cat.Value == ViewBag.SelectedCategory)">@cat.Text</option>
 						}
 					</select>
 				</form>
