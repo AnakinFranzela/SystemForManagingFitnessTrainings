@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
-    //[Route("progress")]
+    [Authorize]
     public class ProgressController : Controller
     {
         private readonly IProgressService _progressService;
@@ -25,6 +25,14 @@ namespace SystemForManagingFitnessTrainings.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool userHasTrainingPlan = await _trainingPlanService.UserHasTrainingPlanAsync(userId);
+
+            if (userHasTrainingPlan == false)
+            {
+                // Option A: Redirect to the TrainingPlan creation page
+                return RedirectToAction("Create", "TrainingPlan", new { message = "Моля първо създайте тренировъчен план." });
+            }
+
             var progressRecords = await _progressService.GetUserProgressAsync(userId);
 
             ViewBag.TrainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(userId);

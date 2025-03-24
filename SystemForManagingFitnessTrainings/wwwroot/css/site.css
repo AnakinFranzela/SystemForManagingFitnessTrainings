@@ -20,3 +20,36 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.custom-navbar {
+    background-color: #343a40 !important;  /*Dark gray navbar */
+    padding: 1rem;
+}
+
+.custom-navbar .nav-link,
+.custom-navbar .navbar-brand {
+    color: #eaeaea !important;  /*Light grayish-white text */
+}
+
+.custom-navbar .nav-link:hover {
+    color: #ffffff !important;  /*Pure white on hover */
+}
+
+.btn-outline-light {
+    border-color: #eaeaea;
+    color: #eaeaea;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background-color: #eaeaea;
+    color: #343a40;
+}
+
+.btn-success {
+    transition: transform 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-3px);
+}

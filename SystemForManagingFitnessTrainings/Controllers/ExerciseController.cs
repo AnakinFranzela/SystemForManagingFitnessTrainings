@@ -8,6 +8,7 @@ using SystemForManagingFitnessTrainings.Enums;
 using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
 using Microsoft.IdentityModel.Tokens;
+using SystemForManagingFitnessTrainings.Helpers;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
@@ -22,25 +23,43 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
         // GET: Exercises/Index
         [HttpGet]
-        public async Task<IActionResult> Index(string category)
+        public async Task<IActionResult> Index(string category, int page = 1, int pageSize = 5)
         {
+            var exercises = string.IsNullOrEmpty(category) || category == "All"
+                ? await _exerciseService.GetAllExercisesAsync()
+                : await _exerciseService.GetExercisesByCategoryAsync(category);
+
+
+            int totalCount = exercises.Count();
+            var exercisesPage = exercises
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var viewModel = new ExerciseTableViewModel
+            {
+                Exercises = exercisesPage,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                SelectedCategory = category ?? "All",
+                // You may keep your categories list in here as well
+            };
+
             var categoriesList = Enum.GetValues(typeof(Categories))
-        .Cast<Categories>()
-        .Select(c => new SelectListItem
-        {
-            Text = c.ToString(),
-            Value = c.ToString(),
-            Selected = (c.ToString() == category)
-        }).ToList();
+                .Cast<Categories>()
+                .Select(c => new SelectListItem
+                {
+                    Text = c.ToString(),
+                    Value = c.ToString(),
+                    Selected = (c.ToString() == category)
+                }).ToList();
 
             ViewBag.Categories = categoriesList;
 
             ViewBag.SelectedCategory = string.IsNullOrEmpty(category) ? "All" : category;
 
-            var exercises = string.IsNullOrEmpty(category) || category == "All"
-                ? await _exerciseService.GetAllExercisesAsync()
-                : await _exerciseService.GetExercisesByCategoryAsync(category);
-            return View(exercises);
+            return View(viewModel);
         }
 
         // GET: Exercises/Create
