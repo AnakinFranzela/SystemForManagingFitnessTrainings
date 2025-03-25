@@ -46,10 +46,7 @@ body {
     color: #343a40;
 }
 
-.btn-success {
-    transition: transform 0.3s ease;
-}
-
-.btn-success:hover {
-    transform: translateY(-3px);
+.container-fluid {
+    width: 90vw;
+    margin-left: calc(-45vw + 50%);
 }
