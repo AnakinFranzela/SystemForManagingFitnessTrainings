@@ -9,6 +9,8 @@ using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
 using Microsoft.IdentityModel.Tokens;
 using SystemForManagingFitnessTrainings.Helpers;
+using NuGet.Protocol.Plugins;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
@@ -79,8 +81,16 @@ namespace SystemForManagingFitnessTrainings.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _exerciseService.CreateExerciseAsync(viewModel.Name, viewModel.Category.ToString(), viewModel.Description);
-                return RedirectToAction(nameof(Index));
+                if (await _exerciseService.CheckForExistingExercise(viewModel.Name))
+                {
+                    await _exerciseService.CreateExerciseAsync(viewModel.Name, viewModel.Category.ToString(), viewModel.Description);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)), viewModel.Category);
+                //TempData["CustomError"] = "Тази тренировка вече съществува.";
+                ModelState.AddModelError("CustomError", "Тази тренировка вече съществува.");
+                return View(viewModel);
             }
 
             ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)), viewModel.Category);

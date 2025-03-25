@@ -1,14 +1,12 @@
 ﻿@model SystemForManagingFitnessTrainings.Helpers.ExerciseTableViewModel
 
-<h2>Упражнения</h2>
+<div class="container my-4">
+	<div class="card shadow">
+		<div class="card-body">
+			<h2 class="card-title text-center">Упражнения</h2>
 
-<table class="table table-bordered">
-	<thead>
-		<tr>
-			<th>Име</th>
-			<th>
-				Категория
-				<form method="get" asp-controller="Exercise" asp-action="Index" class="mb-3">
+			<div class="d-flex justify-content-center mb-3">
+				<form method="get" asp-controller="Exercise" asp-action="Index" class="w-50">
 					<select name="category" class="form-select" onchange="this.form.submit()">
 						<option value="All" selected="@(ViewBag.SelectedCategory == "All")">--Всички категории--</option>
 						@foreach (SelectListItem cat in ViewBag.Categories)
@@ -17,54 +15,65 @@
 						}
 					</select>
 				</form>
-			</th>
-			<th>Описание</th>
+			</div>
+
+			<table class="table table-hover table-bordered align-middle text-center">
+				<thead class="table-dark">
+					<tr>
+						<th>Име</th>
+						<th>Категория</th>
+						<th>Описание</th>
+						@if (User.IsInRole("Admin"))
+						{
+							<th></th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var exercise in Model.Exercises)
+					{
+						<tr>
+							<td>@exercise.Name</td>
+							<td>@exercise.Category</td>
+							<td>@exercise.Description</td>
+							@if (User.IsInRole("Admin"))
+							{
+								<td>
+									<a asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-secondary">Редактирай</a>
+									<button data-exercise-id="@exercise.Id" class="btn btn-outline-danger delete-btn">Изтрий</button>
+								</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+			@if (Model.TotalCount > Model.PageSize)
+			{
+				<nav class="d-flex justify-content-center">
+					<ul class="pagination">
+						@for (int pageNumber = 1; pageNumber <= Math.Ceiling(Model.TotalCount / (double)Model.PageSize); pageNumber++)
+						{
+							<li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
+								<a class="page-link"
+								   asp-action="Index"
+								   asp-route-category="@Model.SelectedCategory"
+								   asp-route-page="@pageNumber">
+									@pageNumber
+								</a>
+							</li>
+						}
+					</ul>
+				</nav>
+			}
 			@if (User.IsInRole("Admin"))
 			{
-			<th></th>
+				<div class="text-center mt-3">
+					<a asp-controller="Exercise" asp-action="Create" class="btn btn-success">Добави ново упражнение</a>
+				</div>
 			}
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var exercise in Model.Exercises)
-		{
-			<tr>
-				<td>@exercise.Name</td>
-				<td>@exercise.Category</td>
-				<td>@exercise.Description</td>
-				@if (User.IsInRole("Admin"))
-				{
-					<td>
-						<a asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-secondary">Редактирай</a>
-						<button data-exercise-id="@exercise.Id" class="btn btn-danger delete-btn">Изтрий</button>
-					</td>
-				}
-			</tr>
-		}
-	</tbody>
-</table>
-@if (Model.TotalCount > Model.PageSize)
-{
-	<nav>
-		<ul class="pagination">
-			@for (int pageNumber = 1; pageNumber <= Math.Ceiling(Model.TotalCount / (double)Model.PageSize); pageNumber++)
-			{
-				<li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
-					<a class="page-link"
-					   asp-action="Index"
-					   asp-route-category="@Model.SelectedCategory"
-					   asp-route-page="@pageNumber">
-						@pageNumber
-					</a>
-				</li>
-			}
-		</ul>
-	</nav>
-}
-@if (User.IsInRole("Admin"))
-{
-	<a asp-controller="Exercise" asp-action="Create" class="btn btn-success">Добави ново упражнение</a>
-}
+		</div>
+	</div>
+</div>
 
 @section Scripts {
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -89,7 +98,7 @@
 								// Remove the deleted row immediately without refresh
 								button.closest('tr').remove();
 							} else {
-								alert("Неуспешно изтриване: " + response.message);
+								alert(response.message);
 							}
 						},
 						error: function () {

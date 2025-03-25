@@ -60,7 +60,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
                 if (hasPlan)
                 {
-                    ModelState.AddModelError("", "You already have a training plan.");
+                    ModelState.AddModelError("", "Ти вече имаш тренировъчен план.");
                     return View(viewModel);
                 }
 

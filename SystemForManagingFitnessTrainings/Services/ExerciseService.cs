@@ -20,6 +20,15 @@ namespace SystemForManagingFitnessTrainings.Services
             return await _context.Exercises.ToListAsync();
         }
 
+        public async Task<bool> CheckForExistingExercise(string exerciseName)
+        {
+            if (_context.Exercises.Any(t => t.Name.ToLower() == exerciseName.ToLower()))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<Exercise> GetExerciseByIdAsync(int id)
         {
             return await _context.Exercises.FindAsync(id);

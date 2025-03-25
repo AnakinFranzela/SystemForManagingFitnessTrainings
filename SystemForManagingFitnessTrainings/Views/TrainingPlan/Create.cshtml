@@ -1,65 +1,67 @@
 ﻿@using SystemForManagingFitnessTrainings.Entities
 @{
-    ViewData["Title"] = "Training Scheduler";
+	ViewData["Title"] = "Създаване на тренировка";
 }
 @model SystemForManagingFitnessTrainings.ViewModels.TrainingPlanViewModel
 
-@section Styles {
-    <!-- FullCalendar CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/training_plan/training_plan.css" />
 
-    <!-- jQuery (required for FullCalendar) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- FullCalendar JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
-}
-
-
-<h2>Training Scheduler</h2>
-
-@if (!ViewData.ModelState.IsValid@*  && ViewData.ModelState[""].Errors.Any() *@)
+@if (!ViewData.ModelState.IsValid)
 {
-    <div class="alert alert-danger">
-        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    </div>
+	<div class="alert alert-danger">
+		@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+	</div>
 }
+<div class="container my-4">
+	<div class="card shadow">
+		<div class="card-body">
+			<h3 class="card-title mb-4">Редактиране на тренировъчен план</h3>
+			<form asp-controller="TrainingPlan" asp-action="Create" method="post">
+				<input type="hidden" asp-for="Id" />
 
-<form asp-controller="TrainingPlan" asp-action="Create" method="post">
-    <input type="hidden" asp-for="Id" />
+				<div asp-validation-summary="All"></div>
 
-    <div asp-validation-summary="All"></div>
-
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" required />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Frequency"></label>
-        <input asp-for="Frequency" class="form-control" required />
-        <span asp-validation-for="Frequency" class="text-danger"></span>
-    </div>
-    <!-- Dropdown for selecting exercises -->
-    <div class="form-group" id="checkboxes-group">
-        <label>Select Exercises:</label>
-        @foreach (var exercise in Model.Exercises)
-        {
-            <div>
-                <input type="checkbox"
-                       name="SelectedExercisesIds"
-                       value="@exercise.Id"
-                @(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "")/>
-                @exercise.Name (@exercise.Category)
-            </div>
-        }
-    </div>
-    <span id="error-msg" style="color:red; display:none;">
-        Please select at least one exercise.
-    </span>
-    <button type="submit" class="btn btn-primary" id="submit-btn">Create</button>
-</form>
+				<div class="mb-3">
+					<label asp-for="Name">Име на плана</label>
+					<input asp-for="Name" class="form-control" required />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+				<div class="mb-3">
+					<label asp-for="Frequency">Честота на тренировка (дни в седмицата)</label>
+					<input asp-for="Frequency" class="form-control" required />
+					<span asp-validation-for="Frequency" class="text-danger"></span>
+				</div>
+				<!-- Dropdown for selecting exercises -->
+				<div class="mb-3">
+					<label><strong>Избери упражнения:</strong></label>
+				<span id="error-msg" style="color:red; display:none;">
+					Трябва да изберете поне едно упражнение.
+				</span>
+					<div class="row" id="checkboxes-group">
+						@foreach (var exercise in Model.Exercises.OrderBy(t => t.Category))
+						{
+							<div class="col-md-6 col-lg-4">
+								<div class="form-check">
+									<input class="form-check-input"
+										   type="checkbox"
+										   name="SelectedExercisesIds"
+										   id="exercise-@exercise.Id"
+										   value="@exercise.Id"
+									@(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "") />
+									<label class="form-check-label" for="exercise-@exercise.Id">
+										@exercise.Name (@exercise.Category)
+									</label>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+				<button type="submit" class="btn btn-success" id="submit-btn">Създай</button>
+			</form>
+		</div>
+	</div>
+</div>
 
 @section Scripts {
-    <script src="~/js/exercise-validation.js"></script>
+	<script src="~/js/exercise-validation.js"></script>
 }

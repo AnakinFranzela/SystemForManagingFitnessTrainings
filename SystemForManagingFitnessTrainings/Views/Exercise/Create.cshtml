@@ -6,6 +6,7 @@
 		<input asp-for="Name" class="form-control" />
 		<span asp-validation-for="Name" class="text-danger"></span>
 	</div>
+	<a class="text-danger text-decoration-none">@Html.ValidationMessage("CustomError")</a>
 
 	<div class="form-group">
 		<label asp-for="Category">Категория</label>
