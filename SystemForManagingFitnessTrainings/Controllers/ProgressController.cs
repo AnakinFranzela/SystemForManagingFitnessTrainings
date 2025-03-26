@@ -56,9 +56,9 @@ namespace SystemForManagingFitnessTrainings.Controllers
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var resultString = ProgressResultHelper.ToResultString(progress.Weight, progress.Repetition, progress.TimeInSeconds);
+                var resultString = ProgressResultHelper.ToResultString((int)progress.Weight, (int)progress.Repetition, (int)progress.TimeInSeconds);
 
-                await _progressService.LogProgressAsync(userId, progress.ExerciseId, progress.Date, resultString);
+                await _progressService.LogProgressAsync(userId, progress.ExerciseId, (DateOnly)progress.Date, resultString);
 
                 return RedirectToAction(nameof(Index));
             }

@@ -1,48 +1,59 @@
-﻿@* @using SystemForManagingFitnessTrainings.Entities *@
-@model List<SystemForManagingFitnessTrainings.Entities.Progress>
+﻿@model List<SystemForManagingFitnessTrainings.Entities.Progress>
 
-<h2>Моят прогрес</h2>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Exercise</th>
-			<th>Date</th>
-			<th>Results</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var progress in Model)
-		{
-			<tr>
-				<td>@progress.Exercise.Name</td>
-				<td>@progress.Date.ToShortDateString()</td>
-				<td>@progress.Results</td>
-			</tr>
-		}
-	</tbody>
-</table>
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Моят прогрес</h2>
 
-<a asp-controller="Progress" asp-action="Create" class="btn btn-success">Добави прогрес</a>
+            <!-- Progress Table -->
+            <div class="table-responsive mb-4">
+                <table class="table table-striped table-bordered table-hover align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Exercise</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var progress in Model)
+                        {
+                            <tr>
+                                <td>@progress.Exercise.Name</td>
+                                <td>@progress.Date.ToShortDateString()</td>
+                                <td>@progress.Results</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-<!-- Dropdown to choose which Exercise to chart -->
-<div class="form-group">
-    <label for="exerciseFilter">Избери упражнение:</label>
-    <select id="exerciseFilter" class="form-control">
-        <option value="">-- Избери упражнение --</option>
-        @foreach (var ex in ViewBag.TrainingPlan.User.Exercises)
-        {
-            <option value="@ex.Id">@ex.Name</option>
-        }
-    </select>
+            <div class="mb-3 d-flex justify-content-center">
+                <a asp-controller="Progress" asp-action="Create" class="btn btn-success me-3">Добави прогрес</a>
+
+                <!-- Drop-down for selecting which exercise to chart -->
+                <div>
+                    <label for="exerciseFilter" class="form-label me-2">Избери упражнение:</label>
+                    <select id="exerciseFilter" class="form-select d-inline-block w-auto">
+                        <option value="">-- Избери упражнение --</option>
+                        @foreach (var ex in ViewBag.TrainingPlan.User.Exercises)
+                        {
+                            <option value="@ex.Id">@ex.Name</option>
+                        }
+                    </select>
+                    <button id="filterBtn" class="btn btn-primary ms-2">Покажи графика</button>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Chart Container -->
+            <div class="chart-container" style="justify-content: center;">
+                <canvas id="progressChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
-
-<button id="filterBtn" class="btn btn-primary">Покажи графика</button>
-
-<hr />
-
-<!-- The chart canvas -->
-<canvas id="progressChart"></canvas>
-}
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -84,30 +95,37 @@
                             labels: labels,
                             datasets: [
                                 {
-                                    label: 'Weight (kg)',
+                                    label: 'Тежести (kg)',
                                     data: weights,
-                                    yAxisID: 'yAxisWeight'
+                                    yAxisID: 'yAxisWeight',
+                                    borderColor: 'blue',
+                                    backgroundColor: 'rgba(0, 0, 255, 0.1)'
                                 },
                                 {
-                                    label: 'Reps',
+                                    label: 'Повторения',
                                     data: reps,
-                                    yAxisID: 'yAxisReps'
+                                    yAxisID: 'yAxisReps',
+                                    borderColor: 'red',
+                                    backgroundColor: 'rgba(255, 0, 0, 0.1)'
                                 },
                                 {
-                                    label: 'Time (s)',
+                                    label: 'Време (секунди)',
                                     data: times,
-                                    yAxisID: 'yAxisTime'
+                                    yAxisID: 'yAxisTime',
+                                    borderColor: 'orange',
+                                    backgroundColor: 'rgba(255, 165, 0, 0.1)'
                                 }
                             ]
                         },
                         options: {
+                            responsive: true,
                             scales: {
                                 yAxisWeight: {
                                     type: 'linear',
                                     position: 'left',
                                     title: {
                                         display: true,
-                                        text: 'Weight (kg)'
+                                        text: 'Тежести (kg)'
                                     }
                                 },
                                 yAxisReps: {
@@ -115,7 +133,7 @@
                                     position: 'right',
                                     title: {
                                         display: true,
-                                        text: 'Reps'
+                                        text: 'Повторения'
                                     },
                                     grid: {
                                         drawOnChartArea: false // separate left & right
@@ -126,7 +144,7 @@
                                     position: 'right',
                                     title: {
                                         display: true,
-                                        text: 'Time (seconds)'
+                                        text: 'Време (секунди)'
                                     },
                                     grid: {
                                         drawOnChartArea: false
