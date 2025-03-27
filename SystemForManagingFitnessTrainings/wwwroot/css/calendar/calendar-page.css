@@ -1,0 +1,33 @@
+﻿.calendar-banner {
+    background-image: url('/images/calendar-banner.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 250px;
+    width: 100%;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+    .calendar-banner h1 {
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+    }
+
+.card-calendar {
+    margin-top: -70px; /* Lift card to overlap banner a bit */
+}
+
+.fc-toolbar {
+    margin-bottom: 1rem !important;
+}
+/* Example text wrapping fix if needed */
+.fc-event-title, .fc-daygrid-event-dot {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}

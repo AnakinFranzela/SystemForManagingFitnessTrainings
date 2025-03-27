@@ -1,178 +1,148 @@
 ﻿@{
-    ViewData["Title"] = "Тренировъчен календар";
+	ViewData["Title"] = "Тренировъчен календар";
 }
 
 @section Styles {
-    <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
-
-    <!-- Optional: You can add a background image or color -->
-    <style>
-        .calendar-banner {
-            background: url('/images/calendar-banner.jpg') center/cover no-repeat;
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-            .calendar-banner h1 {
-                background-color: rgba(0, 0, 0, 0.5);
-                padding: 0.5rem 1rem;
-                border-radius: 8px;
-            }
-
-        .card-calendar {
-            margin-top: -70px; /* Lift card to overlap banner a bit */
-        }
-
-        .fc-toolbar {
-            margin-bottom: 1rem !important;
-        }
-        /* Example text wrapping fix if needed */
-        .fc-event-title, .fc-daygrid-event-dot {
-            white-space: normal !important;
-            word-wrap: break-word !important;
-        }
-    </style>
+	<!-- FullCalendar CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+	<link href="~/css/calendar/calendar-page.css" rel="stylesheet" />
 }
 
 <!-- Calendar Banner Section -->
-<div class="calendar-banner">
-    <h1>Тренировъчен календар</h1>
-</div>
-
-<!-- Card Container for Calendar -->
 <div class="container my-4">
-    <div class="card shadow card-calendar">
-        <div class="card-body">
-            <!-- FullCalendar Element -->
-            <div id="calendar"></div>
-        </div>
-    </div>
+	<div class="calendar-banner rounded">
+		<h1>Тренировъчен календар</h1>
+	</div>
+
+	<!-- Card Container for Calendar -->
+	<div class="card shadow card-calendar">
+		<div class="card-body">
+			<!-- FullCalendar Element -->
+			<div id="calendar"></div>
+		</div>
+	</div>
 </div>
 
 <!-- Modal for adding/editing sessions -->
 <div class="modal fade" id="scheduleModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Насрочване на тренировка за <span id="modalDate"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <label>Избери час:</label>
-                <input type="time" id="sessionTime" class="form-control" />
-            </div>
-            <div class="modal-footer">
-                <button id="saveSessionBtn" class="btn btn-success">Запази</button>
-                <button id="deleteSessionBtn" class="btn btn-danger d-none">Изтрий</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Насрочване на тренировка за <span id="modalDate"></span></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<label>Избери час:</label>
+				<input type="time" id="sessionTime" class="form-control" />
+			</div>
+			<div class="modal-footer">
+				<button id="saveSessionBtn" class="btn btn-success">Запази</button>
+				<button id="deleteSessionBtn" class="btn btn-danger d-none">Изтрий</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    <!-- FullCalendar JS -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/bg.js"></script>
+	<!-- FullCalendar JS -->
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/bg.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            var calendarEl = document.getElementById('calendar');
-            var selectedDate, selectedSessionId;
+	<script>
+		$(document).ready(function () {
+			var calendarEl = document.getElementById('calendar');
+			var selectedDate, selectedSessionId;
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'bg',
-                businessHours: false,
-                allDaySlot: false,
-                events: '/Calendar/GetSessions',
-                buttonText: {
-                    today: "Днес"
-                },
-                nextDayThreshold: '24:00:00',
-                dateClick: function (info) {
-                    if (info.dateStr < todayDate()) {
-                        alert('Не може да насрочвате тренировка в отминали дати.');
-                        return;
-                    }
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				locale: 'bg',
+				businessHours: false,
+				allDaySlot: false,
+				events: '/Calendar/GetSessions',
+				buttonText: {
+					today: "Днес"
+				},
+				nextDayThreshold: '24:00:00',
+				dateClick: function (info) {
+					if (info.dateStr < todayDate()) {
+						alert('Не може да насрочвате тренировка в отминали дати.');
+						return;
+					}
 
-                    selectedDate = info.dateStr;
-                    selectedSessionId = null;
-                    $('#modalDate').text(selectedDate);
-                    $('#sessionTime').val('12:00'); // default time
-                    $('#deleteSessionBtn').addClass('d-none'); // Hide delete button for new
-                    $('#scheduleModal').modal('show');
-                },
-                eventClick: function (info) {
-                    selectedSessionId = info.event.id;
-                    selectedDate = info.event.startStr.split('T')[0];
-                    let sessionTime = info.event.start.toISOString().substring(11,16);
-                    $('#sessionTime').val(sessionTime);
-                    $('#deleteSessionBtn').removeClass('d-none'); // Show delete button for existing
-                    $('#scheduleModal').modal('show');
-                }
-            });
+					selectedDate = info.dateStr;
+					selectedSessionId = null;
+					$('#modalDate').text(selectedDate);
+					$('#sessionTime').val('12:00'); // default time
+					$('#deleteSessionBtn').addClass('d-none'); // Hide delete button for new
+					$('#scheduleModal').modal('show');
+				},
+				eventClick: function (info) {
+					selectedSessionId = info.event.id;
+					selectedDate = info.event.startStr.split('T')[0];
+					let sessionTime = info.event.start.toISOString().substring(11,16);
+					$('#sessionTime').val(sessionTime);
+					$('#deleteSessionBtn').removeClass('d-none'); // Show delete button for existing
+					$('#scheduleModal').modal('show');
+				}
+			});
 
-            calendar.render();
+			calendar.render();
 
-            // Save or Edit Session
-            $('#saveSessionBtn').click(function () {
-                var time = $('#sessionTime').val();
-                 var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
-                 var dataPayload = selectedSessionId
-                 ? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
-                 : { selectedDate: selectedDate, time: time };
- 
-                 if (!time) {
-                     alert("Please select a time.");
-                     return;
-                 }
+			// Save or Edit Session
+			$('#saveSessionBtn').click(function () {
+				var time = $('#sessionTime').val();
+				 var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
+				 var dataPayload = selectedSessionId
+				 ? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
+				 : { selectedDate: selectedDate, time: time };
 
-                $.ajax({
-                     url: url,
-                     type: 'POST',
-                     data: dataPayload,
-                     success: function (response) {
-                         if (response.success) {
-                             $('#scheduleModal').modal('hide');
-                             calendar.refetchEvents();
-                         } else {
-                             alert(response.message); // Displays specific backend validation message
-                         }
-                     },
-                     error: function () {
-                         alert('An error occurred while scheduling.');
-                     }
-                });
-            });
+				 if (!time) {
+					 alert("Please select a time.");
+					 return;
+				 }
 
-            // Delete Session
-            $('#deleteSessionBtn').off('click').on('click', function () {
-                if(confirm('Сигурни ли сте, че искате да изтриете тази тренировка?')) {
-                    $.post('/Calendar/DeleteSession', { id: selectedSessionId }, function(response) {
-                        if(response.success) {
-                            $('#scheduleModal').modal('hide');
-                            calendar.refetchEvents();
-                        } else {
-                            alert(response.message);
-                        }
-                    });
-                };
-            });
+				$.ajax({
+					 url: url,
+					 type: 'POST',
+					 data: dataPayload,
+					 success: function (response) {
+						 if (response.success) {
+							 $('#scheduleModal').modal('hide');
+							 calendar.refetchEvents();
+						 } else {
+							 alert(response.message); // Displays specific backend validation message
+						 }
+					 },
+					 error: function () {
+						 alert('An error occurred while scheduling.');
+					 }
+				});
+			});
 
-            function todayDate() {
-                let now = new Date();
-                return nowISOString(now);
-            }
+			// Delete Session
+			$('#deleteSessionBtn').off('click').on('click', function () {
+				if(confirm('Сигурни ли сте, че искате да изтриете тази тренировка?')) {
+					$.post('/Calendar/DeleteSession', { id: selectedSessionId }, function(response) {
+						if(response.success) {
+							$('#scheduleModal').modal('hide');
+							calendar.refetchEvents();
+						} else {
+							alert(response.message);
+						}
+					});
+				};
+			});
 
-            function nowISOString(now) {
-                return now.getFullYear() + '-' +
-                    ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
-                    ('0' + now.getDate()).slice(-2);
-            }
-        });
-    </script>
+			function todayDate() {
+				let now = new Date();
+				return nowISOString(now);
+			}
+
+			function nowISOString(now) {
+				return now.getFullYear() + '-' +
+					('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+					('0' + now.getDate()).slice(-2);
+			}
+		});
+	</script>
 }

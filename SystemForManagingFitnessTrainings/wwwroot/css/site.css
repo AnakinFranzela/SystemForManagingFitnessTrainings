@@ -18,7 +18,17 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background: #f7f7f7; /* Soft neutral background color */
+    color: #333;
+}
+
+:root {
+    --accent-color: #4CAF50;
+}
+
+.navbar {
+    border-bottom: none !important;
 }
 
 .custom-navbar {
@@ -28,7 +38,12 @@ body {
 
 .custom-navbar .nav-link,
 .custom-navbar .navbar-brand {
-    color: #eaeaea !important;  /*Light grayish-white text */
+    color: #eaeaea !important; /*Light grayish-white text */
+    margin: 0 5px;
+}
+
+.custom-navbar .navbar-brand i {
+    margin-right: 6px;
 }
 
 .custom-navbar .nav-link:hover {
@@ -39,6 +54,12 @@ body {
     border-color: #eaeaea;
     color: #eaeaea;
     transition: all 0.3s ease;
+}
+
+/* Headings and spacing */
+h1, h2, h3 {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 600;
 }
 
 .btn-outline-light:hover {
