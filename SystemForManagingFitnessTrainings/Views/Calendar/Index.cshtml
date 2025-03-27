@@ -89,11 +89,6 @@
                 businessHours: false,
                 allDaySlot: false,
                 events: '/Calendar/GetSessions',
-                headerToolbar: {
-                    left: 'today prev,next',
-                    center: 'title',
-                    right: ''
-                },
                 buttonText: {
                     today: "Днес"
                 },
@@ -126,25 +121,31 @@
             // Save or Edit Session
             $('#saveSessionBtn').click(function () {
                 var time = $('#sessionTime').val();
-                if (!time) {
-                    alert("Please select a time.");
-                    return;
-                }
+                 var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
+                 var dataPayload = selectedSessionId
+                 ? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
+                 : { selectedDate: selectedDate, time: time };
+ 
+                 if (!time) {
+                     alert("Please select a time.");
+                     return;
+                 }
 
-                var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
-                var dataPayload = selectedSessionId
-                    ? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
-                    : { selectedDate: selectedDate, time: time };
-
-                $.post(url, dataPayload, function(response) {
-                    if (response.success) {
-                        $('#scheduleModal').modal('hide');
-                        calendar.refetchEvents();
-                    } else {
-                        alert(response.message);
-                    }
-                }).fail(function() {
-                    alert('An error occurred while scheduling.');
+                $.ajax({
+                     url: url,
+                     type: 'POST',
+                     data: dataPayload,
+                     success: function (response) {
+                         if (response.success) {
+                             $('#scheduleModal').modal('hide');
+                             calendar.refetchEvents();
+                         } else {
+                             alert(response.message); // Displays specific backend validation message
+                         }
+                     },
+                     error: function () {
+                         alert('An error occurred while scheduling.');
+                     }
                 });
             });
 
