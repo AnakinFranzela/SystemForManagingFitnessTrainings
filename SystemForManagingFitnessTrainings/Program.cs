@@ -20,6 +20,15 @@ builder.Services.AddScoped<IExerciseService, ExerciseService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
