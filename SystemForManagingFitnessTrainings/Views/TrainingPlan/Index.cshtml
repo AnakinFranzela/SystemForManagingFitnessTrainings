@@ -1,57 +1,63 @@
 ﻿@model SystemForManagingFitnessTrainings.Entities.TrainingPlan
 
-<h2>Товят тренировъчен план</h2>
-
-@if (Model == null)
-{
-    <p>Все още нямаш тренировъчен план? <a asp-controller="TrainingPlan" asp-action="Create">Направи един сега</a>.</p>
+@section Styles{
+	<link href="/css/training_plan/training_plan.css" rel="stylesheet" />
 }
-else
-{
-    <div>
-        <h3>@Model.Name</h3>
-        <p>Честота: @Model.Frequency пъти в седмицата</p>
 
-        <h4>Упражнения:</h4>
-        <ul>
-            @foreach (var exercise in Model.User.Exercises)
-            {
-                <li>@exercise.Name</li>
-            }
-        </ul>
+<div class="training-card">
+	<h2>Товят тренировъчен план</h2>
 
-        <a asp-controller="TrainingPlan" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Редактиране</a>
-        <button id="delete-btn" data-plan-id="@Model.Id" class="btn btn-danger">Изтрий планът</button>
-    </div>
-}
+	@if (Model == null)
+	{
+		<p>Все още нямаш тренировъчен план? <a asp-controller="TrainingPlan" asp-action="Create">Направи един сега</a>.</p>
+	}
+	else
+	{
+		<div>
+			<h3>@Model.Name</h3>
+			<p>Честота: @Model.Frequency пъти в седмицата</p>
+
+			<h4>Упражнения:</h4>
+			<ul>
+				@foreach (var exercise in Model.User.Exercises)
+				{
+					<li>@exercise.Name</li>
+				}
+			</ul>
+
+			<a asp-controller="TrainingPlan" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Редактиране</a>
+			<button id="delete-btn" data-plan-id="@Model.Id" class="btn btn-danger">Изтрий планът</button>
+		</div>
+	}
+</div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#delete-btn').click(function () {
-                if (confirm("Are you sure you want to delete this Training Plan?")) {
-                    $.ajax({
-                        type: "POST",
-                        url: '@Url.Action("Delete", "TrainingPlan")',
-                        data: {
-                            id: '@Model.Id',
-                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                alert(response.message);
-                                window.location.href = '@Url.Action("Index", "TrainingPlan")';
-                            } else {
-                                alert("Deletion failed: " + response.message);
-                            }
-                        },
-                        error: function () {
-                            alert("An error occurred. Please try again.");
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#delete-btn').click(function () {
+				if (confirm("Are you sure you want to delete this Training Plan?")) {
+					$.ajax({
+						type: "POST",
+						url: '@Url.Action("Delete", "TrainingPlan")',
+						data: {
+							id: '@Model.Id',
+							__RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+						},
+						success: function (response) {
+							if (response.success) {
+								alert(response.message);
+								window.location.href = '@Url.Action("Index", "TrainingPlan")';
+							} else {
+								alert("Deletion failed: " + response.message);
+							}
+						},
+						error: function () {
+							alert("An error occurred. Please try again.");
+						}
+					});
+				}
+			});
+		});
+	</script>
 }
