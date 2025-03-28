@@ -87,12 +87,12 @@ namespace SystemForManagingFitnessTrainings.Areas.Identity.Pages.Account
             [StringLength(10, MinimumLength = 6, ErrorMessage = "Дължината {0} трябва да е поне {2} до {1} символа!")]
             public string UserName { get; set; }
 
-            [Required(ErrorMessage = "Името е задължително")]
+            [Required(ErrorMessage = "Името е задължително!")]
             [Display(Name = "Име")]
             [StringLength(30, MinimumLength = 2, ErrorMessage = "Дължината {0} трябва да е поне {2} до {1} символа!")]
             public string FirstName { get; set; }
 
-            [Required(ErrorMessage = "Фамилията е задължително")]
+            [Required(ErrorMessage = "Фамилията е задължителнa!")]
             [Display(Name = "Фамилия")]
             [StringLength(30, MinimumLength = 2, ErrorMessage = "Дължината {0} трябва да е поне {2} до {1} символа!")]
             public string LastName { get; set; }
@@ -101,7 +101,7 @@ namespace SystemForManagingFitnessTrainings.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessage = "Паролата е задължителна")]
+            [Required(ErrorMessage = "Паролата е задължителна!")]
             [StringLength(100, ErrorMessage = "Дължината {0} трябва да е поне {2} до {1} символа!", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Парола")]
@@ -113,7 +113,7 @@ namespace SystemForManagingFitnessTrainings.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Потвърди парола")]
-            [Compare("Password", ErrorMessage = "Повторената парола не е същата")]
+            [Compare("Password", ErrorMessage = "Паролите не съвпадат!")]
             public string ConfirmPassword { get; set; }
         }
 
