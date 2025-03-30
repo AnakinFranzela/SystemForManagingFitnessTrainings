@@ -1,71 +1,72 @@
 ﻿@model SystemForManagingFitnessTrainings.ViewModels.TrainingPlanViewModel
 
-@section Styles{
-<link rel="stylesheet" href="/css/training_plan/create-edit_training.css" />
+@section Styles {
+	<link rel="stylesheet" href="/css/training_plan/create-edit_training.css" />
 }
 
 @if (Model != null)
 {
-    <div class="container my-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="card-title mb-4">Редактиране на тренировъчен план</h3>
+	<div class="container my-4">
+		<div class="card shadow">
+			<div class="card-body">
+				<h3 class="card-title mb-4">Редактиране на тренировъчен план</h3>
 
-                <form asp-controller="TrainingPlan" asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="Id" />
+				<form asp-controller="TrainingPlan" asp-action="Edit" method="post">
+					<input type="hidden" asp-for="Id" />
 
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label">Име на плана</label>
-                        <input asp-for="Name" class="form-control" required />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+					<div class="mb-3">
+						<label asp-for="Name" class="form-label">Име на плана</label>
+						<input asp-for="Name" class="form-control" required />
+						<span asp-validation-for="Name" class="text-danger"></span>
+					</div>
 
-                    <div class="mb-3">
-                        <label asp-for="Frequency" class="form-label">Честота на тренировки (на седмица)</label>
-                        <input asp-for="Frequency" class="form-control" required />
-                        <span asp-validation-for="Frequency" class="text-danger"></span>
-                    </div>
+					<div class="mb-3">
+						<label asp-for="Frequency" class="form-label">Честота на тренировки (на седмица)</label>
+						<input asp-for="Frequency" class="form-control" required />
+						<span asp-validation-for="Frequency" class="text-danger"></span>
+					</div>
 
-                    <div class="mb-3">
-                        <label class="form-label"><strong>Избери упражнения:</strong></label>
-                        <div class="row" id="checkboxes-group">
-                            @foreach (var exercise in Model.Exercises)
-                            {
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="checkbox"
-                                               name="SelectedExercisesIds"
-                                               id="exercise-@exercise.Id"
-                                               value="@exercise.Id"
-                                        @(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "") />
-                                        <label class="form-check-label" for="exercise-@exercise.Id">
-                                            @exercise.Name (@exercise.Category)
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
+					<div class="mb-3">
+						<label class="form-label"><strong>Избери упражнения:</strong></label>
+						<div class="row" id="checkboxes-group">
+							@foreach (var exercise in Model.Exercises)
+							{
+								<div class="col-md-6 col-lg-4">
+									<div class="form-check">
+										<input class="form-check-input"
+											   type="checkbox"
+											   name="SelectedExercisesIds"
+											   id="exercise-@exercise.Id"
+											   value="@exercise.Id"
+										@(Model.SelectedExercisesIds.Contains(exercise.Id) ? "checked" : "") />
+										<label class="form-check-label" for="exercise-@exercise.Id">
+											@exercise.Name (@exercise.Category)
+										</label>
+									</div>
+								</div>
+							}
+						</div>
+					</div>
 
-                    <span id="error-msg" class="text-danger" style="display:none;">
-                        Избери поне едно упражнение.
-                    </span>
-
-                    <button type="submit" class="btn btn-success mt-3" id="submit-btn">
-                        Запази промените
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+					<span id="error-msg" class="text-danger" style="display:none;">
+						Избери поне едно упражнение.
+					</span>
+					<div class="d-flex justify-content-center">
+						<button type="submit" class="btn btn-success mt-3" id="submit-btn">
+							Запази промените
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 }
 
 else
 {
-    <a asp-action="Create">Създай план</a>
+	<a asp-action="Create">Създай план</a>
 }
 
-@section Scripts{
-    <script src="~/js/exercise-validation.js"></script>
+@section Scripts {
+	<script src="~/js/exercise-validation.js"></script>
 }

@@ -1,4 +1,9 @@
-﻿.form-check-input {
+﻿body {
+    background: url('/images/arnold_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.form-check-input {
     width: 1.2rem;
     height: 1.2rem;
     cursor: pointer;
@@ -6,6 +11,16 @@
 
 .form-check-label {
     cursor: pointer;
+}
+
+.card {
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    margin: 50px auto;
 }
 
 .card-title {

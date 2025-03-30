@@ -72,7 +72,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             // Repopulate the dropdown if there are validation errors
             var exercises = await _exerciseService.GetAllExercisesAsync();
-            ViewBag.Exercises = exercises;
+            viewModel.Exercises = exercises;
 
             return View(viewModel);
         }

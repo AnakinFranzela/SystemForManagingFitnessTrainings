@@ -36,9 +36,9 @@
                     <label for="exerciseFilter" class="form-label me-2">Избери упражнение:</label>
                     <select id="exerciseFilter" class="form-select d-inline-block w-auto">
                         <option value="">-- Избери упражнение --</option>
-                        @foreach (var ex in ViewBag.TrainingPlan.User.Exercises)
+                        @foreach (var ex in ViewBag.ExerciseRecords)
                         {
-                            <option value="@ex.Id">@ex.Name</option>
+                            <option value="@ex.Exercise.Id">@ex.Exercise.Name</option>
                         }
                     </select>
                     <button id="filterBtn" class="btn btn-primary ms-2">Покажи графика</button>

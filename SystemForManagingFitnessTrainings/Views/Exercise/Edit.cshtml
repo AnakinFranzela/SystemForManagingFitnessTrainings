@@ -1,11 +1,16 @@
 ﻿@model SystemForManagingFitnessTrainings.ViewModels.ExerciseViewModel
 
+@section Styles {
+	<link rel="stylesheet" href="/css/exercise/create-edit_exercise.css" />
+}
+
 @if (Model != null)
 {
-	<form asp-controller="Exercise" asp-action="Edit">
+	<form class="fixing" asp-controller="Exercise" asp-action="Edit">
+		<h2 class="d-flex justify-content-center" style="margin-bottom: 30px;">Редактиране на упражнение</h2>
 		<div class="form-group">
 			<label asp-for="Name">Име</label>
-			<input asp-for="Name" class="form-control"/>
+			<input asp-for="Name" class="form-control" />
 			<span asp-validation-for="Name" class="text-danger"></span>
 		</div>
 
@@ -23,6 +28,8 @@
 			<span asp-validation-for="Description" class="text-danger"></span>
 		</div>
 
-		<button type="submit" class="btn btn-primary" id="submit-btn">Запази</button>
+		<div class="d-flex justify-content-center">
+			<button type="submit" class="btn btn-primary w-100" style="margin-top: 20px;" id="submit-btn">Запази</button>
+		</div>
 	</form>
 }

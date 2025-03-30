@@ -47,7 +47,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             if (sessionExists)
             {
-                return Json(new { success = false, message = "You already have a workout scheduled for this day." });
+                return Json(new { success = false, message = "Вече имате насрочена тренировка за този ден." });
             }
 
             await _calendarService.CreateSessionAsync(userId, sessionDateTime);

@@ -3,7 +3,7 @@ body, html {
     height: 100%;
     margin: 0;
     padding: 0;
-    background: url('/images/plank-background.jpg') no-repeat center center fixed;
+    background: url('/images/arnold_background.jpg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Segoe UI', sans-serif;
     color: white;

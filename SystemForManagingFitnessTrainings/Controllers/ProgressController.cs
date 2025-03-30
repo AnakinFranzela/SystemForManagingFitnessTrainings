@@ -35,7 +35,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             var progressRecords = await _progressService.GetUserProgressAsync(userId);
 
-            ViewBag.TrainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(userId);
+            ViewBag.ExerciseRecords = progressRecords.DistinctBy(i => i.Exercise);
 
             return View(progressRecords);
         }

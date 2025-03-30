@@ -1,4 +1,14 @@
-﻿.calendar-banner {
+﻿body {
+    background: linear-gradient(135deg, #1f1f1f, #2b2b2b);
+}
+
+.fc-event:hover {
+    box-shadow: 0 0 10px #ff5722;
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+.calendar-banner {
     background-image: url('/images/calendar-banner.jpg');
     background-size: cover;
     background-position: center;
@@ -30,4 +40,16 @@
 .fc-event-title, .fc-daygrid-event-dot {
     white-space: normal !important;
     word-wrap: break-word !important;
+}
+
+.btn-success:hover,
+.btn-danger:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+.fc-daygrid-day:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }

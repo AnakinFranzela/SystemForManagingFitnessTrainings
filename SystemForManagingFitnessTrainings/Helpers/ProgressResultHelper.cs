@@ -5,7 +5,7 @@
         public static string ToResultString(int weight, int reps, int timeInSeconds)
         {
             // e.g. "weight=80.5;reps=12;time=45"
-            return $"weight={weight}; repetitions={reps}; time={timeInSeconds}";
+            return $"Тежести: {weight}; Повторения: {reps}; Време: {timeInSeconds}";
         }
 
         public static (int Weight, int Reps, int TimeInSeconds) FromResultString(string results)
@@ -22,17 +22,17 @@
 
             foreach (var part in parts)
             {
-                var keyValue = part.Split('=', StringSplitOptions.RemoveEmptyEntries);
+                var keyValue = part.Split(':', StringSplitOptions.RemoveEmptyEntries);
                 if (keyValue.Length != 2) continue;
 
                 var key = keyValue[0].Trim();
                 var value = keyValue[1].Trim();
 
-                if (key == "weight" && int.TryParse(value, out var w))
+                if (key == "Тежести" && int.TryParse(value, out var w))
                     weight = w;
-                else if (key == "repetitions" && int.TryParse(value, out var r))
+                else if (key == "Повторения" && int.TryParse(value, out var r))
                     reps = r;
-                else if (key == "time" && int.TryParse(value, out var t))
+                else if (key == "Време" && int.TryParse(value, out var t))
                     time = t;
             }
             return (weight, reps, time);

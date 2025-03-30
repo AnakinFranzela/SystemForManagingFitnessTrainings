@@ -36,6 +36,21 @@ body {
     padding: 1rem;
 }
 
+.custom-navbar button {
+    padding: 9px;
+    border: none;
+    border-radius: 6px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.custom-navbar button:hover {
+    background-color: #00d48c;
+    transform: scale(1.05);
+}
+
 .custom-navbar .nav-link,
 .custom-navbar .navbar-brand {
     color: #eaeaea !important; /*Light grayish-white text */
