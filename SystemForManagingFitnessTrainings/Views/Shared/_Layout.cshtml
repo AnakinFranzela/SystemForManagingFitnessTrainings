@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/shared/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/SystemForManagingFitnessTrainings.styles.css" asp-append-version="true" />
+	<link rel="icon" type="image/x-icon" href="~/dumbbell.ico" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 	@RenderSection("Styles", false)
 </head>
@@ -28,16 +29,16 @@
 							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начало</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" asp-controller="TrainingPlan" asp-action="Index"><i class="fas fa-list-alt"></i>Моят план</a>
+							<a class="nav-link" asp-controller="TrainingPlan" asp-action="Index"><i class="fas fa-list-alt p-1"></i>Моят план</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" asp-controller="Calendar" asp-action="Index"><i class="fas fa-calendar-alt"></i>Календар</a>
+							<a class="nav-link" asp-controller="Calendar" asp-action="Index"><i class="fas fa-calendar-alt p-1"></i>Календар</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" asp-controller="Progress" asp-action="Index"><i class="fas fa-chart-line"></i>Прогрес</a>
+							<a class="nav-link" asp-controller="Progress" asp-action="Index"><i class="fas fa-chart-line p-1"></i>Прогрес</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" asp-controller="Exercise" asp-action="Index"><i class="fas fa-running"></i>Упражнения</a>
+							<a class="nav-link" asp-controller="Exercise" asp-action="Index"><i class="fas fa-running p-1"></i>Упражнения</a>
 						</li>
 					</ul>
 					<partial name="~/Views/Shared/_LoginPartial.cshtml" />

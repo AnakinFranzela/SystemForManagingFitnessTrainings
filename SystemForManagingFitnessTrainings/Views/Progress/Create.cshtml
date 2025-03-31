@@ -1,6 +1,6 @@
 ﻿@model SystemForManagingFitnessTrainings.ViewModels.ProgressViewModel
 @{
-    ViewData["Title"] = "Log Progress";
+    ViewData["Title"] = "Добаване на прогрес";
 }
 
 @section Styles{
@@ -13,30 +13,30 @@
     <h2 class="d-flex justify-content-center">Въведи прогрес</h2>
 
     <div class="form-group">
-        <label>Exercise</label>
+        <label>Упражнение</label>
         <select asp-for="ExerciseId" asp-items="@(new SelectList(ViewBag.TrainingPlan.User.Exercises, "Id", "Name"))" class="form-control"></select>
     </div>
 
     <div class="form-group">
-        <label>Date</label>
+        <label>Дата</label>
         <input asp-for="Date" type="date" class="form-control" />
         <span asp-validation-for="Date" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Weight:</label>
+        <label>Тежести (в килограми):</label>
         <input asp-for="Weight" type="number" class="form-control" />
         <span asp-validation-for="Weight" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Reps:</label>
+        <label>Повторения:</label>
         <input asp-for="Repetition" type="number" class="form-control" />
         <span asp-validation-for="Repetition" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Time (seconds):</label>
+        <label>Време (в секунди):</label>
         <input asp-for="TimeInSeconds" type="number" class="form-control" />
         <span asp-validation-for="TimeInSeconds" class="text-danger"></span>
     </div>

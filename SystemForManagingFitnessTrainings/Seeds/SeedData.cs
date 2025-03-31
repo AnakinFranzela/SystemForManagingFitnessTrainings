@@ -58,16 +58,16 @@ namespace SystemForManagingFitnessTrainings.Seeds
             {
                 var exercises = new List<Exercise>
                     {
-                        new Exercise { Name = "Pushups", Category = "Strength", Description = "Upper body strength exercise." },
-                        new Exercise { Name = "Squats", Category = "Strength", Description = "Lower body strength exercise." },
-                        new Exercise { Name = "Plank", Category = "Core", Description = "Core strengthening exercise." },
-                        new Exercise { Name = "Running", Category = "Cardio", Description = "Aerobic exercise for cardiovascular health." },
-                        new Exercise { Name = "Bench Press", Category = "Strength", Description = "Chest and arm strength exercise." },
-                        new Exercise { Name = "Cycling", Category = "Cardio", Description = "Low-impact aerobic exercise." },
-                        new Exercise { Name = "Lunges", Category = "Strength", Description = "Leg strength and stability exercise." },
-                        new Exercise { Name = "Burpees", Category = "Endurance", Description = "Full-body endurance exercise." },
-                        new Exercise { Name = "Deadlifts", Category = "Strength", Description = "Compound strength exercise targeting multiple muscle groups." },
-                        new Exercise { Name = "Swimming", Category = "Cardio", Description = "Full-body aerobic exercise." }
+                        new Exercise { Name = "Лицеви опори", Category = "Калистеника", Description = "Упражнение използващо главно тежестта на тялото, имащо ефект върху ръцете и гърдите." },
+                        new Exercise { Name = "Клекове", Category = "Силови", Description = "Силово упражнение за долната част на тялото." },
+                        new Exercise { Name = "Планк", Category = "Издръжливост", Description = "Упражнение за издръжливост на коремните мускули." },
+                        new Exercise { Name = "Скачане на въже", Category = "Кардио", Description = "Аеробно упражнение за сърдечносъдовото здраве." },
+                        new Exercise { Name = "Лежанка", Category = "Силови", Description = "Упражнение за силата на ръцете и гърдите." },
+                        new Exercise { Name = "Бягане", Category = "Кардио", Description = "Аеробно упражнение за сърдечносъдовото здраве." },
+                        new Exercise { Name = "Набирания", Category = "Калистеника", Description = "Упражнение използващо главно тежестта на тялото, за трицепс." },
+                        new Exercise { Name = "Бърпита", Category = "Издръжливост", Description = "Упражнение за издръжливостта на цялото тяло." },
+                        new Exercise { Name = "Мъртва тяга", Category = "Силови", Description = "Комбинирано упражнение за сила, насочено към множество мускулни групи." },
+                        new Exercise { Name = "Кофички", Category = "Калистеника", Description = "Упражнение с тежестта на тялото за гърди и трицепс." }
                     };
 
                 context.Exercises.AddRange(exercises);

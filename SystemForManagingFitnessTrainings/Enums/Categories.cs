@@ -7,14 +7,12 @@ namespace SystemForManagingFitnessTrainings.Enums
     public enum Categories
     {
         [Display(Name = "Кардио")]
-        Cardio,
-        [Display(Name = "Силови тренировки")]
-        Strength,
+        Кардио,
+        [Display(Name = "Силови")]
+        Силови,
         [Display(Name = "Издръжливост")]
-        Endurance,
+        Издръжливост,
         [Display(Name = "Калистеника")]
-        Calisthenics,
-        [Display(Name = "Разтягане")]
-        Stretching
+        Калистеника
     }
 }

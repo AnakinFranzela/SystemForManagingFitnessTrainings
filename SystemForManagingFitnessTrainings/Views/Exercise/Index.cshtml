@@ -1,5 +1,9 @@
 ﻿@model SystemForManagingFitnessTrainings.Helpers.ExerciseTableViewModel
 
+@{
+    ViewData["Title"] = "Упражнения";
+}
+
 <link href="~/css/exercise/exercise.css" rel="stylesheet" />
 
 <div class="background">
@@ -11,10 +15,10 @@
                 <div class="d-flex justify-content-center mb-3">
                     <form method="get" asp-controller="Exercise" asp-action="Index" class="w-50">
                         <select name="category" class="form-select" onchange="this.form.submit()">
-                            <option value="All" selected="@(ViewBag.SelectedCategory == "All")">--Всички категории--</option>
+                            <option value="All" class="text-center" selected="@(ViewBag.SelectedCategory == "All")">--Всички категории--</option>
                             @foreach (SelectListItem cat in ViewBag.Categories)
                             {
-                                <option value="@cat.Value" selected="@(cat.Value == ViewBag.SelectedCategory)">@cat.Text</option>
+                                <option class="text-center" value="@cat.Value" selected="@(cat.Value == ViewBag.SelectedCategory)">@cat.Text</option>
                             }
                         </select>
                     </form>
@@ -38,10 +42,12 @@
                             <tr>
                                 <td>@exercise.Name</td>
                                 <td>@exercise.Category</td>
-                                <td>@exercise.Description</td>
+                                <td>
+                                    <div class="resizable-cell">@exercise.Description</div>
+                                </td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <td>
+                                    <td style="min-width: 220px">
                                         <a asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-secondary">Редактирай</a>
                                         <button data-exercise-id="@exercise.Id" class="btn btn-danger delete-btn">Изтрий</button>
                                     </td>
