@@ -34,7 +34,7 @@ table {
     border-collapse: collapse;
     border-radius: 12px;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 th, td {
@@ -45,7 +45,7 @@ th, td {
 }
 
 th {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 1);
     font-weight: bold;
     font-size: 1.1rem;
 }

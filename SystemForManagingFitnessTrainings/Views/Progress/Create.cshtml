@@ -3,10 +3,14 @@
     ViewData["Title"] = "Log Progress";
 }
 
-<h2>Въведи прогрес</h2>
+@section Styles{
+    <link rel="stylesheet" href="/css/progress/create_progress.css" />
+}
 
-<form asp-controller="Progress" asp-action="Create" method="post">
+<form class="form-fixing" asp-controller="Progress" asp-action="Create" method="post">
     @Html.AntiForgeryToken()
+
+    <h2 class="d-flex justify-content-center">Въведи прогрес</h2>
 
     <div class="form-group">
         <label>Exercise</label>
@@ -37,5 +41,5 @@
         <span asp-validation-for="TimeInSeconds" class="text-danger"></span>
     </div>
 
-    <button class="btn btn-primary" type="submit">Save</button>
+    <button class="btn btn-primary w-100" style="margin-top: 30px;" type="submit">Save</button>
 </form>

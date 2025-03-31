@@ -34,9 +34,9 @@
 				<!-- Dropdown for selecting exercises -->
 				<div class="mb-3">
 					<label><strong>Избери упражнения:</strong></label>
-				<span id="error-msg" style="color:red; display:none;">
-					Трябва да изберете поне едно упражнение.
-				</span>
+					<span id="error-msg" style="color:red; display:none;">
+						Трябва да изберете поне едно упражнение.
+					</span>
 					<div class="row" id="checkboxes-group">
 						@foreach (var exercise in Model.Exercises.OrderBy(t => t.Category))
 						{
@@ -56,7 +56,9 @@
 						}
 					</div>
 				</div>
-				<button type="submit" class="btn btn-success" id="submit-btn">Създай</button>
+				<div class="d-flex justify-content-center" style="">
+					<button type="submit" class="btn btn-success w-100" id="submit-btn">Създай</button>
+				</div>
 			</form>
 		</div>
 	</div>
