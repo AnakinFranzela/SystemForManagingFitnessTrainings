@@ -27,7 +27,7 @@ namespace SystemForManagingFitnessTrainings.Controllers
 
             if (userHasTrainingPlan == false)
             {
-                // Option A: Redirect to the TrainingPlan creation page
+                // Redirect to the TrainingPlan creation page
                 return RedirectToAction("Create", "TrainingPlan", new { message = "Моля първо създайте тренировъчен план." });
             }
 
@@ -87,15 +87,6 @@ namespace SystemForManagingFitnessTrainings.Controllers
             });
 
             return Json(data);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _progressService.DeleteProgressAsync(id, userId);
-
-            return RedirectToAction(nameof(Index));
         }
     }
 }

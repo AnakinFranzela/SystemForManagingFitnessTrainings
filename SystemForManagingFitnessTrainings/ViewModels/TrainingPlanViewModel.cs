@@ -13,6 +13,5 @@ namespace SystemForManagingFitnessTrainings.ViewModels
         public int Frequency { get; set; }
         public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
         public ICollection<int> SelectedExercisesIds { get; set; } = new List<int>();
-        //public string? UserId { get; set; }
     }
 }

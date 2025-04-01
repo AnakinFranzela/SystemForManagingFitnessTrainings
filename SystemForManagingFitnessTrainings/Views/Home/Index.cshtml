@@ -1,62 +1,61 @@
 ﻿@{
 	ViewData["Title"] = "Начална страница";
 }
-<head>
+@section STyles {
 	<link rel="stylesheet" href="/css/home/home.css" />
-</head>
+}
 
-<body>
-	<div class="hero-banner text-white">
-		<div class="hero-overlay">
-			<h1>Вашият организатор на тренировки онлайн!</h1>
-			<p>Започнете вашето фитнес пътуване още днес.</p>
-			<a href="/TrainingPlan" class="btn btn-success">Започни сега</a>
+
+<div class="hero-banner text-white">
+	<div class="hero-overlay">
+		<h1>Вашият организатор на тренировки онлайн!</h1>
+		<p>Започнете вашето фитнес пътуване още днес.</p>
+		<a href="/TrainingPlan" class="btn btn-success">Започни сега</a>
+	</div>
+</div>
+
+<div class="container-fluid my-5">
+	<h2 class="text-center mb-4">Какво Ви предлагаме?</h2>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="card text-center">
+				<div class="card-body">
+					<i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+					<h5 class="card-title">Тренировъчен календар</h5>
+					<p class="card-text">Организирайте тренировките си лесно и удобно.</p>
+					<a href="/Calendar" class="btn btn-primary">Виж повече</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card text-center">
+				<div class="card-body">
+					<i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+					<h5 class="card-title">Следете прогреса си</h5>
+					<p class="card-text">Подробни графики за вашия напредък.</p>
+					<a href="/Progress" class="btn btn-success">Виж повече</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card text-center">
+				<div class="card-body">
+					<i class="fas fa-dumbbell fa-3x text-danger mb-3"></i>
+					<h5 class="card-title">Упражнения</h5>
+					<p class="card-text">Разнообразие от упражнения за всяка мускулна група.</p>
+					<a href="/Exercise" class="btn btn-danger">Виж повече</a>
+				</div>
+			</div>
 		</div>
 	</div>
-
-	<div class="container-fluid my-5">
-		<h2 class="text-center mb-4">Какво Ви предлагаме?</h2>
-		<div class="row">
-			<div class="col-md-4">
-				<div class="card text-center">
-					<div class="card-body">
-						<i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
-						<h5 class="card-title">Тренировъчен календар</h5>
-						<p class="card-text">Организирайте тренировките си лесно и удобно.</p>
-						<a href="/Calendar" class="btn btn-primary">Виж повече</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card text-center">
-					<div class="card-body">
-						<i class="fas fa-chart-line fa-3x text-success mb-3"></i>
-						<h5 class="card-title">Следете прогреса си</h5>
-						<p class="card-text">Подробни графики за вашия напредък.</p>
-						<a href="/Progress" class="btn btn-success">Виж повече</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card text-center">
-					<div class="card-body">
-						<i class="fas fa-dumbbell fa-3x text-danger mb-3"></i>
-						<h5 class="card-title">Упражнения</h5>
-						<p class="card-text">Разнообразие от упражнения за всяка мускулна група.</p>
-						<a href="/Exercise" class="btn btn-danger">Виж повече</a>
-					</div>
-				</div>
-			</div>
+</div>
+@if (!User.IsInRole("Admin") && !User.IsInRole("Customer"))
+{
+	<div class="container-fluid bg-dark text-white py-5 mb-0 custom-container">
+		<div class="container text-center">
+			<h3>Готови ли сте за промяна?</h3>
+			<p>Присъединете се към нашата фитнес общност днес!</p>
+			<a href="/Identity/Account/Register" class="btn btn-lg btn-success">Регистрирай се сега</a>
 		</div>
 	</div>
-	@if (!User.IsInRole("Admin") && !User.IsInRole("Customer"))
-	{
-		<div class="container-fluid bg-dark text-white py-5 mb-0 custom-container">
-			<div class="container text-center">
-				<h3>Готови ли сте за промяна?</h3>
-				<p>Присъединете се към нашата фитнес общност днес!</p>
-				<a href="/Identity/Account/Register" class="btn btn-lg btn-success">Регистрирай се сега</a>
-			</div>
-		</div>
-	}
-</body>
+}

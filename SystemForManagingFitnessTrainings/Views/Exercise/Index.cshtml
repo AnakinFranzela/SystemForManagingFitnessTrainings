@@ -1,122 +1,123 @@
 ﻿@model SystemForManagingFitnessTrainings.Helpers.ExerciseTableViewModel
 
 @{
-    ViewData["Title"] = "Упражнения";
+	ViewData["Title"] = "Упражнения";
+}
+@section Styles {
+	<link href="~/css/exercise/exercise.css" rel="stylesheet" />
 }
 
-<link href="~/css/exercise/exercise.css" rel="stylesheet" />
-
 <div class="background">
-    <div class="container my-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="card-title text-center">Упражнения</h2>
+	<div class="container my-4">
+		<div class="card shadow">
+			<div class="card-body">
+				<h2 class="card-title text-center">Упражнения</h2>
 
-                <div class="d-flex justify-content-center mb-3">
-                    <form method="get" asp-controller="Exercise" asp-action="Index" class="w-50">
-                        <select name="category" class="form-select" onchange="this.form.submit()">
-                            <option value="All" class="text-center" selected="@(ViewBag.SelectedCategory == "All")">--Всички категории--</option>
-                            @foreach (SelectListItem cat in ViewBag.Categories)
-                            {
-                                <option class="text-center" value="@cat.Value" selected="@(cat.Value == ViewBag.SelectedCategory)">@cat.Text</option>
-                            }
-                        </select>
-                    </form>
-                </div>
+				<div class="d-flex justify-content-center mb-3">
+					<form method="get" asp-controller="Exercise" asp-action="Index" class="w-50">
+						<select name="category" class="form-select" onchange="this.form.submit()">
+							<option value="All" class="text-center" selected="@(ViewBag.SelectedCategory == "All")">--Всички категории--</option>
+							@foreach (SelectListItem cat in ViewBag.Categories)
+							{
+								<option class="text-center" value="@cat.Value" selected="@(cat.Value == ViewBag.SelectedCategory)">@cat.Text</option>
+							}
+						</select>
+					</form>
+				</div>
 
-                <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Име</th>
-                            <th>Категория</th>
-                            <th>Описание</th>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <th></th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var exercise in Model.Exercises)
-                        {
-                            <tr>
-                                <td>@exercise.Name</td>
-                                <td>@exercise.Category</td>
-                                <td>
-                                    <div class="resizable-cell">@exercise.Description</div>
-                                </td>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <td style="min-width: 220px">
-                                        <a asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-secondary">Редактирай</a>
-                                        <button data-exercise-id="@exercise.Id" class="btn btn-danger delete-btn" onsubmit="post();">Изтрий</button>
-                                    </td>
-                                }
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                @if (Model.TotalCount > Model.PageSize)
-                {
-                    <nav class="d-flex justify-content-center">
-                        <ul class="pagination">
-                            @for (int pageNumber = 1; pageNumber <= Math.Ceiling(Model.TotalCount / (double)Model.PageSize); pageNumber++)
-                            {
-                                <li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
-                                    <a class="page-link"
-                                       asp-action="Index"
-                                       asp-route-category="@Model.SelectedCategory"
-                                       asp-route-page="@pageNumber">
-                                        @pageNumber
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
-                }
-                @if (User.IsInRole("Admin"))
-                {
-                    <div class="text-center mt-3">
-                        <a asp-controller="Exercise" asp-action="Create" class="btn btn-success">Добави ново упражнение</a>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
+				<table class="table table-hover table-bordered align-middle text-center">
+					<thead class="table-dark">
+						<tr>
+							<th>Име</th>
+							<th>Категория</th>
+							<th>Описание</th>
+							@if (User.IsInRole("Admin"))
+							{
+								<th></th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var exercise in Model.Exercises)
+						{
+							<tr>
+								<td>@exercise.Name</td>
+								<td>@exercise.Category</td>
+								<td>
+									<div class="resizable-cell">@exercise.Description</div>
+								</td>
+								@if (User.IsInRole("Admin"))
+								{
+									<td style="min-width: 220px">
+										<a asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-secondary">Редактирай</a>
+										<button data-exercise-id="@exercise.Id" class="btn btn-danger delete-btn" onsubmit="post();">Изтрий</button>
+									</td>
+								}
+							</tr>
+						}
+					</tbody>
+				</table>
+				@if (Model.TotalCount > Model.PageSize)
+				{
+					<nav class="d-flex justify-content-center">
+						<ul class="pagination">
+							@for (int pageNumber = 1; pageNumber <= Math.Ceiling(Model.TotalCount / (double)Model.PageSize); pageNumber++)
+							{
+								<li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
+									<a class="page-link"
+									   asp-action="Index"
+									   asp-route-category="@Model.SelectedCategory"
+									   asp-route-page="@pageNumber">
+										@pageNumber
+									</a>
+								</li>
+							}
+						</ul>
+					</nav>
+				}
+				@if (User.IsInRole("Admin"))
+				{
+					<div class="text-center mt-3">
+						<a asp-controller="Exercise" asp-action="Create" class="btn btn-success">Добави ново упражнение</a>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Attach event handler to all buttons with class "delete-btn"
-            $('.delete-btn').click(function () {
-                var button = $(this);
-                var exerciseId = button.data('exercise-id');
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			// Attach event handler to all buttons with class "delete-btn"
+			$('.delete-btn').click(function () {
+				var button = $(this);
+				var exerciseId = button.data('exercise-id');
 
-                if (confirm("Сигурни ли сте, че искате да изтриете упражнението?")) {
-                    $.ajax({
-                        type: "POST",
-                        url: '@Url.Action("Delete", "Exercise")',
-                        data: {
-                            id: exerciseId,
-                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                alert(response.message);
-                                // Remove the deleted row immediately without refresh
-                                button.closest('tr').remove();
-                            } else {
-                                alert(response.message);
-                            }
-                        },
-                        error: function () {
-                            alert("Възникна грешка. Моля опитайте пак.");
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+				if (confirm("Сигурни ли сте, че искате да изтриете упражнението?")) {
+					$.ajax({
+						type: "POST",
+						url: '@Url.Action("Delete", "Exercise")',
+						data: {
+							id: exerciseId,
+							__RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+						},
+						success: function (response) {
+							if (response.success) {
+								alert(response.message);
+								// Remove the deleted row immediately without refresh
+								button.closest('tr').remove();
+							} else {
+								alert(response.message);
+							}
+						},
+						error: function () {
+							alert("Възникна грешка. Моля опитайте пак.");
+						}
+					});
+				}
+			});
+		});
+	</script>
 }

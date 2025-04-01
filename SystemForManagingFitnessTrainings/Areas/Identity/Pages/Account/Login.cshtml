@@ -2,46 +2,48 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+	ViewData["Title"] = "Log in";
 }
-<link href="/css/register-login/site.css" rel="stylesheet" />
+@section Styles {
+	<link href="/css/register-login/site.css" rel="stylesheet" />
+}
 
 <div class="auth-background">
-    <div class="auth-card">
-        <h2>Вход в системата</h2>
-        <section>
-            <form id="account" method="post">
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.UserName" class="form-label">Потребителско име</label>
-                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Парола</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        Запомни ме
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Влизане</button>
-                </div>
-                <div>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Нямаш акаунт? Регистрирай се сега!</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
+	<div class="auth-card">
+		<h2>Вход в системата</h2>
+		<section>
+			<form id="account" method="post">
+				<hr />
+				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+				<div class="form-floating mb-3">
+					<input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+					<label asp-for="Input.UserName" class="form-label">Потребителско име</label>
+					<span asp-validation-for="Input.UserName" class="text-danger"></span>
+				</div>
+				<div class="form-floating mb-3">
+					<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+					<label asp-for="Input.Password" class="form-label">Парола</label>
+					<span asp-validation-for="Input.Password" class="text-danger"></span>
+				</div>
+				<div class="checkbox mb-3">
+					<label asp-for="Input.RememberMe" class="form-label">
+						<input class="form-check-input" asp-for="Input.RememberMe" />
+						Запомни ме
+					</label>
+				</div>
+				<div>
+					<button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Влизане</button>
+				</div>
+				<div>
+					<p>
+						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Нямаш акаунт? Регистрирай се сега!</a>
+					</p>
+				</div>
+			</form>
+		</section>
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }

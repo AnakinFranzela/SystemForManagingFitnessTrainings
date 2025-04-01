@@ -82,7 +82,6 @@ namespace SystemForManagingFitnessTrainings.Controllers
                 }
 
                 ViewBag.Categories = new SelectList(Enum.GetValues(typeof(Categories)), viewModel.Category);
-                //TempData["CustomError"] = "Тази тренировка вече съществува.";
                 ModelState.AddModelError("CustomError", "Тази тренировка вече съществува.");
                 return View(viewModel);
             }
@@ -121,8 +120,6 @@ namespace SystemForManagingFitnessTrainings.Controllers
         [Authorize(Roles = "Admin")] // Only admins can edit exercises
         public async Task<IActionResult> Edit(int id, ExerciseViewModel viewModel)
         {
-            //var errors = ModelState.Values.SelectMany(v => v.Errors);
-
             if (ModelState.IsValid)
             {
                 var success = await _exerciseService.UpdateExerciseAsync(id, viewModel.Name, viewModel.Category.ToString(), viewModel.Description);
