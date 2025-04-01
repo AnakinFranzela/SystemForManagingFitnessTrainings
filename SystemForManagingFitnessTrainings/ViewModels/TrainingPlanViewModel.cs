@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json.Serialization;
 using SystemForManagingFitnessTrainings.Entities;
 
 namespace SystemForManagingFitnessTrainings.ViewModels

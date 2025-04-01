@@ -1,16 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SystemForManagingFitnessTrainings.Data;
 using SystemForManagingFitnessTrainings.ViewModels;
 using SystemForManagingFitnessTrainings.Enums;
-using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
-using Microsoft.IdentityModel.Tokens;
 using SystemForManagingFitnessTrainings.Helpers;
-using NuGet.Protocol.Plugins;
-using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {

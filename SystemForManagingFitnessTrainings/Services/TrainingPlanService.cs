@@ -2,7 +2,6 @@
 using SystemForManagingFitnessTrainings.Data;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Services.IServices;
-using SystemForManagingFitnessTrainings.ViewModels;
 
 namespace SystemForManagingFitnessTrainings.Services
 {

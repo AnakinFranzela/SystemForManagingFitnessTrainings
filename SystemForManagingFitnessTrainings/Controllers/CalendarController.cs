@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using SystemForManagingFitnessTrainings.Data;
-using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Services.IServices;
-using SystemForManagingFitnessTrainings.ViewModels;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
@@ -74,7 +70,6 @@ namespace SystemForManagingFitnessTrainings.Controllers
             }
         }
 
-        // Delete a session
         [HttpPost]
         public async Task<IActionResult> DeleteSession(int id)
         {

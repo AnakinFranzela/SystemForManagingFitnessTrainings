@@ -1,13 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Build.Framework;
-using Microsoft.EntityFrameworkCore;
-using SystemForManagingFitnessTrainings.Data;
-using SystemForManagingFitnessTrainings.Entities;
-using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
 using SystemForManagingFitnessTrainings.ViewModels;
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SystemForManagingFitnessTrainings.Data;
 using SystemForManagingFitnessTrainings.Entities;
 using SystemForManagingFitnessTrainings.Services.IServices;

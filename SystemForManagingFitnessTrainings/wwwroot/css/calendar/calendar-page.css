@@ -36,7 +36,7 @@
 .fc-toolbar {
     margin-bottom: 1rem !important;
 }
-/* Example text wrapping fix if needed */
+/* Text wrappign fix */
 .fc-event-title, .fc-daygrid-event-dot {
     white-space: normal !important;
     word-wrap: break-word !important;

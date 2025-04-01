@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemForManagingFitnessTrainings.ViewModels;
 using SystemForManagingFitnessTrainings.Helpers;
-using SystemForManagingFitnessTrainings.Services;
 using SystemForManagingFitnessTrainings.Services.IServices;
-using Microsoft.EntityFrameworkCore;
 
 namespace SystemForManagingFitnessTrainings.Controllers
 {
