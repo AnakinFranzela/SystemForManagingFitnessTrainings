@@ -21,6 +21,7 @@
                             <th scope="col" class="text-center">Упражнение</th>
                             <th scope="col" class="text-center">Дата</th>
                             <th scope="col" class="text-center">Резултати</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +31,11 @@
                                 <td>@progress.Exercise.Name</td>
                                 <td>@progress.Date.ToShortDateString()</td>
                                 <td>@progress.Results</td>
+                                <td>
+                                    <form asp-action="Delete" asp-route-id="@progress.Id" method="post" onsubmit="return confirm('Сигурен ли си, че искаш да изтриеш тази тренировка?');">
+                                        <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>
+                                    </form>
+                                </td>
                             </tr>
                         }
                     </tbody>

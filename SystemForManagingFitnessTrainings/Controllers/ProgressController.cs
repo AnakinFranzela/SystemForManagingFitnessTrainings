@@ -42,7 +42,8 @@ namespace SystemForManagingFitnessTrainings.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.TrainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            ViewBag.TrainingPlan = await _trainingPlanService
+                .GetUserTrainingPlanAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return View();
         }
 
@@ -54,14 +55,17 @@ namespace SystemForManagingFitnessTrainings.Controllers
             if (ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var resultString = ProgressResultHelper.ToResultString((int)progress.Weight, (int)progress.Repetition, (int)progress.TimeInSeconds);
+                var resultString = ProgressResultHelper
+                    .ToResultString((int)progress.Weight, (int)progress.Repetition, (int)progress.TimeInSeconds);
 
-                await _progressService.LogProgressAsync(userId, progress.ExerciseId, (DateOnly)progress.Date, resultString);
+                await _progressService
+                    .LogProgressAsync(userId, progress.ExerciseId, (DateOnly)progress.Date, resultString);
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.TrainingPlan = await _trainingPlanService.GetUserTrainingPlanAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            ViewBag.TrainingPlan = await _trainingPlanService
+                .GetUserTrainingPlanAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return View(progress);
         }
 
@@ -87,6 +91,14 @@ namespace SystemForManagingFitnessTrainings.Controllers
             });
 
             return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _progressService.DeleteProgressAsync(id, userId);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

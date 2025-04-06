@@ -9,14 +9,23 @@ namespace SystemForManagingFitnessTrainings.Controllers
     public class CalendarController : Controller
     {
         private readonly ICalendarService _calendarService;
+        private readonly ITrainingPlanService _trainingPlanService;
 
-        public CalendarController(ICalendarService calendarService)
+        public CalendarController(ICalendarService calendarService, ITrainingPlanService trainingPlanService)
         {
             _calendarService = calendarService;
+            _trainingPlanService = trainingPlanService;
         }
 
         public IActionResult Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            bool userHasTrainingPlan = _trainingPlanService.UserHasTrainingPlanAsync(userId).Result;
+            if (!userHasTrainingPlan)
+            {
+                // Redirect to the TrainingPlan creation page
+                return RedirectToAction("Create", "TrainingPlan", new { message = "Моля първо създайте тренировъчен план." });
+            }
             return View();
         }
 

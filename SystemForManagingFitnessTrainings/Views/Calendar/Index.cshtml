@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SystemForManagingFitnessTrainings.Entities.TrainingPlan
+@{
 	ViewData["Title"] = "Тренировъчен календар";
 }
 
@@ -49,6 +50,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/bg.js"></script>
 
 	<script>
+
 		$(document).ready(function () {
 			var calendarEl = document.getElementById('calendar');
 			var selectedDate, selectedSessionId;
@@ -91,31 +93,31 @@
 			// Save or Edit Session
 			$('#saveSessionBtn').click(function () {
 				var time = $('#sessionTime').val();
-				 var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
-				 var dataPayload = selectedSessionId
-				 ? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
-				 : { selectedDate: selectedDate, time: time };
+		var url = selectedSessionId ? '/Calendar/EditSession' : '/Calendar/CreateSession';
+		var dataPayload = selectedSessionId
+		? { selectedSessionId: selectedSessionId, selectedDate: selectedDate, time: time }
+		: { selectedDate: selectedDate, time: time };
 
-				 if (!time) {
-					 alert("Моля избери време.");
-					 return;
-				 }
+		if (!time) {
+		 alert("Моля избери време.");
+		 return;
+		}
 
 				$.ajax({
-					 url: url,
-					 type: 'POST',
-					 data: dataPayload,
-					 success: function (response) {
-						 if (response.success) {
-							 $('#scheduleModal').modal('hide');
-							 calendar.refetchEvents();
-						 } else {
-							 alert(response.message); // Displays specific backend validation message
-						 }
-					 },
-					 error: function () {
-						 alert('Възникна грешка, докато си избирахте час.');
-					 }
+		 url: url,
+		 type: 'POST',
+		 data: dataPayload,
+		 success: function (response) {
+		  if (response.success) {
+		   $('#scheduleModal').modal('hide');
+		   calendar.refetchEvents();
+		  } else {
+		   alert(response.message); // Displays specific backend validation message
+		  }
+		 },
+		 error: function () {
+		  alert('Възникна грешка, докато си избирахте час.');
+		 }
 				});
 			});
 
